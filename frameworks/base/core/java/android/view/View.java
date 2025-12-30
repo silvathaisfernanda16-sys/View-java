@@ -1539,3 +1539,1125 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     @Retention(RetentionPolicy.SOURCE)
     public @interface ContentCaptureImportance {}
   
+
+    /**
+     * Automatically determine whether a view is important for content capture.
+     *
+     * @see #isImportantForContentCapture()
+     * @see #setImportantForContentCapture(int)
+     */
+    public static final int IMPORTANT_FOR_CONTENT_CAPTURE_AUTO = 0x0;
+
+    /**
+     * The view is important for content capture, and its children (if any) will be traversed.
+     *
+     * @see #isImportantForContentCapture()
+     * @see #setImportantForContentCapture(int)
+     */
+    public static final int IMPORTANT_FOR_CONTENT_CAPTURE_YES = 0x1;
+
+    /**
+     * The view is not important for content capture, but its children (if any) will be traversed.
+     *
+     * @see #isImportantForContentCapture()
+     * @see #setImportantForContentCapture(int)
+     */
+    public static final int IMPORTANT_FOR_CONTENT_CAPTURE_NO = 0x2;
+
+    /**
+     * The view is important for content capture, but its children (if any) will not be traversed.
+     *
+     * @see #isImportantForContentCapture()
+     * @see #setImportantForContentCapture(int)
+     */
+    public static final int IMPORTANT_FOR_CONTENT_CAPTURE_YES_EXCLUDE_DESCENDANTS = 0x4;
+
+    /**
+     * The view is not important for content capture, and its children (if any) will not be
+     * traversed.
+     *
+     * @see #isImportantForContentCapture()
+     * @see #setImportantForContentCapture(int)
+     */
+    public static final int IMPORTANT_FOR_CONTENT_CAPTURE_NO_EXCLUDE_DESCENDANTS = 0x8;
+
+    /** {@hide} */
+    @IntDef(flag = true, prefix = {"SCROLL_CAPTURE_HINT_"},
+            value = {
+                    SCROLL_CAPTURE_HINT_AUTO,
+                    SCROLL_CAPTURE_HINT_EXCLUDE,
+                    SCROLL_CAPTURE_HINT_INCLUDE,
+                    SCROLL_CAPTURE_HINT_EXCLUDE_DESCENDANTS
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ScrollCaptureHint {}
+
+    /**
+     * The content of this view will be considered for scroll capture if scrolling is possible.
+     *
+     * @see #getScrollCaptureHint()
+     * @see #setScrollCaptureHint(int)
+     */
+    public static final int SCROLL_CAPTURE_HINT_AUTO = 0;
+
+    /**
+     * Explicitly exclude this view as a potential scroll capture target. The system will not
+     * consider it. Mutually exclusive with {@link #SCROLL_CAPTURE_HINT_INCLUDE}, which this flag
+     * takes precedence over.
+     *
+     * @see #getScrollCaptureHint()
+     * @see #setScrollCaptureHint(int)
+     */
+    public static final int SCROLL_CAPTURE_HINT_EXCLUDE = 0x1;
+
+    /**
+     * Explicitly include this view as a potential scroll capture target. When locating a scroll
+     * capture target, this view will be prioritized before others without this flag. Mutually
+     * exclusive with {@link #SCROLL_CAPTURE_HINT_EXCLUDE}, which takes precedence.
+     *
+     * @see #getScrollCaptureHint()
+     * @see #setScrollCaptureHint(int)
+     */
+    public static final int SCROLL_CAPTURE_HINT_INCLUDE = 0x2;
+
+    /**
+     * Explicitly exclude all children of this view as potential scroll capture targets. This view
+     * is unaffected. Note: Excluded children are not considered, regardless of {@link
+     * #SCROLL_CAPTURE_HINT_INCLUDE}.
+     *
+     * @see #getScrollCaptureHint()
+     * @see #setScrollCaptureHint(int)
+     */
+    public static final int SCROLL_CAPTURE_HINT_EXCLUDE_DESCENDANTS = 0x4;
+
+    /**
+     * This view is enabled. Interpretation varies by subclass.
+     * Use with ENABLED_MASK when calling setFlags.
+     * {@hide}
+     */
+    static final int ENABLED = 0x00000000;
+
+    /**
+     * This view is disabled. Interpretation varies by subclass.
+     * Use with ENABLED_MASK when calling setFlags.
+     * {@hide}
+     */
+    static final int DISABLED = 0x00000020;
+
+    /**
+     * Mask for use with setFlags indicating bits used for indicating whether
+     * this view is enabled
+     * {@hide}
+     */
+    static final int ENABLED_MASK = 0x00000020;
+
+    /**
+     * This view won't draw. {@link #onDraw(android.graphics.Canvas)} won't be
+     * called and further optimizations will be performed. It is okay to have
+     * this flag set and a background. Use with DRAW_MASK when calling setFlags.
+     * {@hide}
+     */
+    static final int WILL_NOT_DRAW = 0x00000080;
+
+    /**
+     * Mask for use with setFlags indicating bits used for indicating whether
+     * this view is will draw
+     * {@hide}
+     */
+    static final int DRAW_MASK = 0x00000080;
+
+    /**
+     * <p>This view doesn't show scrollbars.</p>
+     * {@hide}
+     */
+    static final int SCROLLBARS_NONE = 0x00000000;
+
+    /**
+     * <p>This view shows horizontal scrollbars.</p>
+     * {@hide}
+     */
+    static final int SCROLLBARS_HORIZONTAL = 0x00000100;
+
+    /**
+     * <p>This view shows vertical scrollbars.</p>
+     * {@hide}
+     */
+    static final int SCROLLBARS_VERTICAL = 0x00000200;
+
+    /**
+     * <p>Mask for use with setFlags indicating bits used for indicating which
+     * scrollbars are enabled.</p>
+     * {@hide}
+     */
+    static final int SCROLLBARS_MASK = 0x00000300;
+
+    /**
+     * Indicates that the view should filter touches when its window is obscured.
+     * Refer to the class comments for more information about this security feature.
+     * {@hide}
+     */
+    static final int FILTER_TOUCHES_WHEN_OBSCURED = 0x00000400;
+
+    /**
+     * Set for framework elements that use FITS_SYSTEM_WINDOWS, to indicate
+     * that they are optional and should be skipped if the window has
+     * requested system UI flags that ignore those insets for layout.
+     * <p>
+     * This is only used for support library as of Android R. The framework now uses
+     * {@link #PFLAG4_FRAMEWORK_OPTIONAL_FITS_SYSTEM_WINDOWS} such that it can skip the legacy
+     * insets path that loses insets information.
+     */
+    static final int OPTIONAL_FITS_SYSTEM_WINDOWS = 0x00000800;
+
+    /**
+     * <p>This view doesn't show fading edges.</p>
+     * {@hide}
+     */
+    static final int FADING_EDGE_NONE = 0x00000000;
+
+    /**
+     * <p>This view shows horizontal fading edges.</p>
+     * {@hide}
+     */
+    static final int FADING_EDGE_HORIZONTAL = 0x00001000;
+
+    /**
+     * <p>This view shows vertical fading edges.</p>
+     * {@hide}
+     */
+    static final int FADING_EDGE_VERTICAL = 0x00002000;
+
+    /**
+     * <p>Mask for use with setFlags indicating bits used for indicating which
+     * fading edges are enabled.</p>
+     * {@hide}
+     */
+    static final int FADING_EDGE_MASK = 0x00003000;
+
+    /**
+     * <p>Indicates this view can be clicked. When clickable, a View reacts
+     * to clicks by notifying the OnClickListener.<p>
+     * {@hide}
+     */
+    static final int CLICKABLE = 0x00004000;
+
+    /**
+     * <p>Indicates this view is caching its drawing into a bitmap.</p>
+     * {@hide}
+     */
+    static final int DRAWING_CACHE_ENABLED = 0x00008000;
+
+    /**
+     * <p>Indicates that no icicle should be saved for this view.<p>
+     * {@hide}
+     */
+    static final int SAVE_DISABLED = 0x000010000;
+
+    /**
+     * <p>Mask for use with setFlags indicating bits used for the saveEnabled
+     * property.</p>
+     * {@hide}
+     */
+    static final int SAVE_DISABLED_MASK = 0x000010000;
+
+    /**
+     * <p>Indicates that no drawing cache should ever be created for this view.<p>
+     * {@hide}
+     */
+    static final int WILL_NOT_CACHE_DRAWING = 0x000020000;
+
+    /**
+     * <p>Indicates this view can take / keep focus when int touch mode.</p>
+     * {@hide}
+     */
+    static final int FOCUSABLE_IN_TOUCH_MODE = 0x00040000;
+
+    /** @hide */
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef(prefix = { "DRAWING_CACHE_QUALITY_" }, value = {
+            DRAWING_CACHE_QUALITY_LOW,
+            DRAWING_CACHE_QUALITY_HIGH,
+            DRAWING_CACHE_QUALITY_AUTO
+    })
+    public @interface DrawingCacheQuality {}
+
+    /**
+     * <p>Enables low quality mode for the drawing cache.</p>
+     *
+     * @deprecated The view drawing cache was largely made obsolete with the introduction of
+     * hardware-accelerated rendering in API 11. With hardware-acceleration, intermediate cache
+     * layers are largely unnecessary and can easily result in a net loss in performance due to the
+     * cost of creating and updating the layer. In the rare cases where caching layers are useful,
+     * such as for alpha animations, {@link #setLayerType(int, Paint)} handles this with hardware
+     * rendering. For software-rendered snapshots of a small part of the View hierarchy or
+     * individual Views it is recommended to create a {@link Canvas} from either a {@link Bitmap} or
+     * {@link android.graphics.Picture} and call {@link #draw(Canvas)} on the View. However these
+     * software-rendered usages are discouraged and have compatibility issues with hardware-only
+     * rendering features such as {@link android.graphics.Bitmap.Config#HARDWARE Config.HARDWARE}
+     * bitmaps, real-time shadows, and outline clipping. For screenshots of the UI for feedback
+     * reports or unit testing the {@link PixelCopy} API is recommended.
+     */
+    @Deprecated
+    public static final int DRAWING_CACHE_QUALITY_LOW = 0x00080000;
+
+    /**
+     * <p>Enables high quality mode for the drawing cache.</p>
+     *
+     * @deprecated The view drawing cache was largely made obsolete with the introduction of
+     * hardware-accelerated rendering in API 11. With hardware-acceleration, intermediate cache
+     * layers are largely unnecessary and can easily result in a net loss in performance due to the
+     * cost of creating and updating the layer. In the rare cases where caching layers are useful,
+     * such as for alpha animations, {@link #setLayerType(int, Paint)} handles this with hardware
+     * rendering. For software-rendered snapshots of a small part of the View hierarchy or
+     * individual Views it is recommended to create a {@link Canvas} from either a {@link Bitmap} or
+     * {@link android.graphics.Picture} and call {@link #draw(Canvas)} on the View. However these
+     * software-rendered usages are discouraged and have compatibility issues with hardware-only
+     * rendering features such as {@link android.graphics.Bitmap.Config#HARDWARE Config.HARDWARE}
+     * bitmaps, real-time shadows, and outline clipping. For screenshots of the UI for feedback
+     * reports or unit testing the {@link PixelCopy} API is recommended.
+     */
+    @Deprecated
+    public static final int DRAWING_CACHE_QUALITY_HIGH = 0x00100000;
+
+    /**
+     * <p>Enables automatic quality mode for the drawing cache.</p>
+     *
+     * @deprecated The view drawing cache was largely made obsolete with the introduction of
+     * hardware-accelerated rendering in API 11. With hardware-acceleration, intermediate cache
+     * layers are largely unnecessary and can easily result in a net loss in performance due to the
+     * cost of creating and updating the layer. In the rare cases where caching layers are useful,
+     * such as for alpha animations, {@link #setLayerType(int, Paint)} handles this with hardware
+     * rendering. For software-rendered snapshots of a small part of the View hierarchy or
+     * individual Views it is recommended to create a {@link Canvas} from either a {@link Bitmap} or
+     * {@link android.graphics.Picture} and call {@link #draw(Canvas)} on the View. However these
+     * software-rendered usages are discouraged and have compatibility issues with hardware-only
+     * rendering features such as {@link android.graphics.Bitmap.Config#HARDWARE Config.HARDWARE}
+     * bitmaps, real-time shadows, and outline clipping. For screenshots of the UI for feedback
+     * reports or unit testing the {@link PixelCopy} API is recommended.
+     */
+    @Deprecated
+    public static final int DRAWING_CACHE_QUALITY_AUTO = 0x00000000;
+
+    private static final int[] DRAWING_CACHE_QUALITY_FLAGS = {
+            DRAWING_CACHE_QUALITY_AUTO, DRAWING_CACHE_QUALITY_LOW, DRAWING_CACHE_QUALITY_HIGH
+    };
+
+    /**
+     * <p>Mask for use with setFlags indicating bits used for the cache
+     * quality property.</p>
+     * {@hide}
+     */
+    static final int DRAWING_CACHE_QUALITY_MASK = 0x00180000;
+
+    /**
+     * <p>
+     * Indicates this view can be long clicked. When long clickable, a View
+     * reacts to long clicks by notifying the OnLongClickListener or showing a
+     * context menu.
+     * </p>
+     * {@hide}
+     */
+    static final int LONG_CLICKABLE = 0x00200000;
+
+    /**
+     * <p>Indicates that this view gets its drawable states from its direct parent
+     * and ignores its original internal states.</p>
+     *
+     * @hide
+     */
+    static final int DUPLICATE_PARENT_STATE = 0x00400000;
+
+    /**
+     * <p>
+     * Indicates this view can be context clicked. When context clickable, a View reacts to a
+     * context click (e.g. a primary stylus button press or right mouse click) by notifying the
+     * OnContextClickListener.
+     * </p>
+     * {@hide}
+     */
+    static final int CONTEXT_CLICKABLE = 0x00800000;
+
+    /** @hide */
+    @IntDef(prefix = { "SCROLLBARS_" }, value = {
+            SCROLLBARS_INSIDE_OVERLAY,
+            SCROLLBARS_INSIDE_INSET,
+            SCROLLBARS_OUTSIDE_OVERLAY,
+            SCROLLBARS_OUTSIDE_INSET
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ScrollBarStyle {}
+
+    /**
+     * The scrollbar style to display the scrollbars inside the content area,
+     * without increasing the padding. The scrollbars will be overlaid with
+     * translucency on the view's content.
+     */
+    public static final int SCROLLBARS_INSIDE_OVERLAY = 0;
+
+    /**
+     * The scrollbar style to display the scrollbars inside the padded area,
+     * increasing the padding of the view. The scrollbars will not overlap the
+     * content area of the view.
+     */
+    public static final int SCROLLBARS_INSIDE_INSET = 0x01000000;
+
+    /**
+     * The scrollbar style to display the scrollbars at the edge of the view,
+     * without increasing the padding. The scrollbars will be overlaid with
+     * translucency.
+     */
+    public static final int SCROLLBARS_OUTSIDE_OVERLAY = 0x02000000;
+
+    /**
+     * The scrollbar style to display the scrollbars at the edge of the view,
+     * increasing the padding of the view. The scrollbars will only overlap the
+     * background, if any.
+     */
+    public static final int SCROLLBARS_OUTSIDE_INSET = 0x03000000;
+
+    /**
+     * Mask to check if the scrollbar style is overlay or inset.
+     * {@hide}
+     */
+    static final int SCROLLBARS_INSET_MASK = 0x01000000;
+
+    /**
+     * Mask to check if the scrollbar style is inside or outside.
+     * {@hide}
+     */
+    static final int SCROLLBARS_OUTSIDE_MASK = 0x02000000;
+
+    /**
+     * Mask for scrollbar style.
+     * {@hide}
+     */
+    static final int SCROLLBARS_STYLE_MASK = 0x03000000;
+
+    /**
+     * View flag indicating that the screen should remain on while the
+     * window containing this view is visible to the user.  This effectively
+     * takes care of automatically setting the WindowManager's
+     * {@link WindowManager.LayoutParams#FLAG_KEEP_SCREEN_ON}.
+     */
+    public static final int KEEP_SCREEN_ON = 0x04000000;
+
+    /**
+     * View flag indicating whether this view should have sound effects enabled
+     * for events such as clicking and touching.
+     */
+    public static final int SOUND_EFFECTS_ENABLED = 0x08000000;
+
+    /**
+     * View flag indicating whether this view should have haptic feedback
+     * enabled for events such as long presses.
+     */
+    public static final int HAPTIC_FEEDBACK_ENABLED = 0x10000000;
+
+    /**
+     * <p>Indicates that the view hierarchy should stop saving state when
+     * it reaches this view.  If state saving is initiated immediately at
+     * the view, it will be allowed.
+     * {@hide}
+     */
+    static final int PARENT_SAVE_DISABLED = 0x20000000;
+
+    /**
+     * <p>Mask for use with setFlags indicating bits used for PARENT_SAVE_DISABLED.</p>
+     * {@hide}
+     */
+    static final int PARENT_SAVE_DISABLED_MASK = 0x20000000;
+
+    private static Paint sDebugPaint;
+
+    /**
+     * <p>Indicates this view can display a tooltip on hover or long press.</p>
+     * {@hide}
+     */
+    static final int TOOLTIP = 0x40000000;
+
+    /** @hide */
+    @IntDef(prefix = { "CONTENT_SENSITIVITY_" }, value = {
+            CONTENT_SENSITIVITY_AUTO,
+            CONTENT_SENSITIVITY_SENSITIVE,
+            CONTENT_SENSITIVITY_NOT_SENSITIVE
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ContentSensitivity {}
+
+    /**
+     * Content sensitivity is determined by the framework. The framework uses a heuristic to
+     * determine if this view displays sensitive content.
+     * Autofill hints i.e. {@link #getAutofillHints()}  are used in the heuristic
+     * to determine if this view should be considered as a sensitive view.
+     * <p>
+     * {@link #AUTOFILL_HINT_USERNAME},
+     * {@link #AUTOFILL_HINT_PASSWORD},
+     * {@link #AUTOFILL_HINT_CREDIT_CARD_NUMBER},
+     * {@link #AUTOFILL_HINT_CREDIT_CARD_SECURITY_CODE},
+     * {@link #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DATE},
+     * {@link #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DAY},
+     * {@link #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_MONTH},
+     * {@link #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_YEAR}
+     * are considered sensitive hints by the framework, and the list may include more hints
+     * in the future.
+     *
+     * <p> The window hosting a sensitive view will be marked as secure during an active media
+     * projection session. This would be equivalent to applying
+     * {@link android.view.WindowManager.LayoutParams#FLAG_SECURE} to the window.
+     *
+     * @see #getContentSensitivity()
+     */
+    @FlaggedApi(FLAG_SENSITIVE_CONTENT_APP_PROTECTION_API)
+    public static final int CONTENT_SENSITIVITY_AUTO = 0x0;
+
+    /**
+     * The view displays sensitive content.
+     *
+     * <p> The window hosting a sensitive view will be marked as secure during an active media
+     * projection session. This would be equivalent to applying
+     * {@link android.view.WindowManager.LayoutParams#FLAG_SECURE} to the window.
+     *
+     * @see #getContentSensitivity()
+     */
+    @FlaggedApi(FLAG_SENSITIVE_CONTENT_APP_PROTECTION_API)
+    public static final int CONTENT_SENSITIVITY_SENSITIVE = 0x1;
+
+    /**
+     * The view doesn't display sensitive content.
+     *
+     * @see #getContentSensitivity()
+     */
+    @FlaggedApi(FLAG_SENSITIVE_CONTENT_APP_PROTECTION_API)
+    public static final int CONTENT_SENSITIVITY_NOT_SENSITIVE = 0x2;
+
+    /** @hide */
+    @IntDef(flag = true, prefix = { "FOCUSABLES_" }, value = {
+            FOCUSABLES_ALL,
+            FOCUSABLES_TOUCH_MODE
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FocusableMode {}
+
+    /**
+     * View flag indicating whether {@link #addFocusables(ArrayList, int, int)}
+     * should add all focusable Views regardless if they are focusable in touch mode.
+     */
+    public static final int FOCUSABLES_ALL = 0x00000000;
+
+    /**
+     * View flag indicating whether {@link #addFocusables(ArrayList, int, int)}
+     * should add only Views focusable in touch mode.
+     */
+    public static final int FOCUSABLES_TOUCH_MODE = 0x00000001;
+
+    /** @hide */
+    @IntDef(prefix = { "FOCUS_" }, value = {
+            FOCUS_BACKWARD,
+            FOCUS_FORWARD,
+            FOCUS_LEFT,
+            FOCUS_UP,
+            FOCUS_RIGHT,
+            FOCUS_DOWN
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FocusDirection {}
+
+    /** @hide */
+    @IntDef(prefix = { "FOCUS_" }, value = {
+            FOCUS_LEFT,
+            FOCUS_UP,
+            FOCUS_RIGHT,
+            FOCUS_DOWN
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FocusRealDirection {} // Like @FocusDirection, but without forward/backward
+
+    /**
+     * Use with {@link #focusSearch(int)}. Move focus to the previous selectable
+     * item.
+     */
+    public static final int FOCUS_BACKWARD = 0x00000001;
+
+    /**
+     * Use with {@link #focusSearch(int)}. Move focus to the next selectable
+     * item.
+     */
+    public static final int FOCUS_FORWARD = 0x00000002;
+
+    /**
+     * Use with {@link #focusSearch(int)}. Move focus to the left.
+     */
+    public static final int FOCUS_LEFT = 0x00000011;
+
+    /**
+     * Use with {@link #focusSearch(int)}. Move focus up.
+     */
+    public static final int FOCUS_UP = 0x00000021;
+
+    /**
+     * Use with {@link #focusSearch(int)}. Move focus to the right.
+     */
+    public static final int FOCUS_RIGHT = 0x00000042;
+
+    /**
+     * Use with {@link #focusSearch(int)}. Move focus down.
+     */
+    public static final int FOCUS_DOWN = 0x00000082;
+
+    /**
+     * Bits of {@link #getMeasuredWidthAndState()} and
+     * {@link #getMeasuredWidthAndState()} that provide the actual measured size.
+     */
+    public static final int MEASURED_SIZE_MASK = 0x00ffffff;
+
+    /**
+     * Bits of {@link #getMeasuredWidthAndState()} and
+     * {@link #getMeasuredWidthAndState()} that provide the additional state bits.
+     */
+    public static final int MEASURED_STATE_MASK = 0xff000000;
+
+    /**
+     * Bit shift of {@link #MEASURED_STATE_MASK} to get to the height bits
+     * for functions that combine both width and height into a single int,
+     * such as {@link #getMeasuredState()} and the childState argument of
+     * {@link #resolveSizeAndState(int, int, int)}.
+     */
+    public static final int MEASURED_HEIGHT_STATE_SHIFT = 16;
+
+    /**
+     * Bit of {@link #getMeasuredWidthAndState()} and
+     * {@link #getMeasuredWidthAndState()} that indicates the measured size
+     * is smaller that the space the view would like to have.
+     */
+    public static final int MEASURED_STATE_TOO_SMALL = 0x01000000;
+
+    /**
+     * Base View state sets
+     */
+    // Singles
+    /**
+     * Indicates the view has no states set. States are used with
+     * {@link android.graphics.drawable.Drawable} to change the drawing of the
+     * view depending on its state.
+     *
+     * @see android.graphics.drawable.Drawable
+     * @see #getDrawableState()
+     */
+    protected static final int[] EMPTY_STATE_SET;
+    /**
+     * Indicates the view is enabled. States are used with
+     * {@link android.graphics.drawable.Drawable} to change the drawing of the
+     * view depending on its state.
+     *
+     * @see android.graphics.drawable.Drawable
+     * @see #getDrawableState()
+     */
+    protected static final int[] ENABLED_STATE_SET;
+    /**
+     * Indicates the view is focused. States are used with
+     * {@link android.graphics.drawable.Drawable} to change the drawing of the
+     * view depending on its state.
+     *
+     * @see android.graphics.drawable.Drawable
+     * @see #getDrawableState()
+     */
+    protected static final int[] FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is selected. States are used with
+     * {@link android.graphics.drawable.Drawable} to change the drawing of the
+     * view depending on its state.
+     *
+     * @see android.graphics.drawable.Drawable
+     * @see #getDrawableState()
+     */
+    protected static final int[] SELECTED_STATE_SET;
+    /**
+     * Indicates the view is pressed. States are used with
+     * {@link android.graphics.drawable.Drawable} to change the drawing of the
+     * view depending on its state.
+     *
+     * @see android.graphics.drawable.Drawable
+     * @see #getDrawableState()
+     */
+    protected static final int[] PRESSED_STATE_SET;
+    /**
+     * Indicates the view's window has focus. States are used with
+     * {@link android.graphics.drawable.Drawable} to change the drawing of the
+     * view depending on its state.
+     *
+     * @see android.graphics.drawable.Drawable
+     * @see #getDrawableState()
+     */
+    protected static final int[] WINDOW_FOCUSED_STATE_SET;
+    // Doubles
+    /**
+     * Indicates the view is enabled and has the focus.
+     *
+     * @see #ENABLED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     */
+    protected static final int[] ENABLED_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is enabled and selected.
+     *
+     * @see #ENABLED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     */
+    protected static final int[] ENABLED_SELECTED_STATE_SET;
+    /**
+     * Indicates the view is enabled and that its window has focus.
+     *
+     * @see #ENABLED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] ENABLED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is focused and selected.
+     *
+     * @see #FOCUSED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     */
+    protected static final int[] FOCUSED_SELECTED_STATE_SET;
+    /**
+     * Indicates the view has the focus and that its window has the focus.
+     *
+     * @see #FOCUSED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] FOCUSED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is selected and that its window has the focus.
+     *
+     * @see #SELECTED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] SELECTED_WINDOW_FOCUSED_STATE_SET;
+    // Triples
+    /**
+     * Indicates the view is enabled, focused and selected.
+     *
+     * @see #ENABLED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     */
+    protected static final int[] ENABLED_FOCUSED_SELECTED_STATE_SET;
+    /**
+     * Indicates the view is enabled, focused and its window has the focus.
+     *
+     * @see #ENABLED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] ENABLED_FOCUSED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is enabled, selected and its window has the focus.
+     *
+     * @see #ENABLED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] ENABLED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is focused, selected and its window has the focus.
+     *
+     * @see #FOCUSED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is enabled, focused, selected and its window
+     * has the focus.
+     *
+     * @see #ENABLED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is pressed and its window has the focus.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is pressed and selected.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     */
+    protected static final int[] PRESSED_SELECTED_STATE_SET;
+    /**
+     * Indicates the view is pressed, selected and its window has the focus.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is pressed and focused.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is pressed, focused and its window has the focus.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_FOCUSED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is pressed, focused and selected.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_FOCUSED_SELECTED_STATE_SET;
+    /**
+     * Indicates the view is pressed, focused, selected and its window has the focus.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is pressed and enabled.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #ENABLED_STATE_SET
+     */
+    protected static final int[] PRESSED_ENABLED_STATE_SET;
+    /**
+     * Indicates the view is pressed, enabled and its window has the focus.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #ENABLED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_ENABLED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is pressed, enabled and selected.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #ENABLED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     */
+    protected static final int[] PRESSED_ENABLED_SELECTED_STATE_SET;
+    /**
+     * Indicates the view is pressed, enabled, selected and its window has the
+     * focus.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #ENABLED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_ENABLED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is pressed, enabled and focused.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #ENABLED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_ENABLED_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is pressed, enabled, focused and its window has the
+     * focus.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #ENABLED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_ENABLED_FOCUSED_WINDOW_FOCUSED_STATE_SET;
+    /**
+     * Indicates the view is pressed, enabled, focused and selected.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #ENABLED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_ENABLED_FOCUSED_SELECTED_STATE_SET;
+    /**
+     * Indicates the view is pressed, enabled, focused, selected and its window
+     * has the focus.
+     *
+     * @see #PRESSED_STATE_SET
+     * @see #ENABLED_STATE_SET
+     * @see #SELECTED_STATE_SET
+     * @see #FOCUSED_STATE_SET
+     * @see #WINDOW_FOCUSED_STATE_SET
+     */
+    protected static final int[] PRESSED_ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET;
+
+    /**
+     * This indicates that the frame rate category was chosen for an unknown reason.
+     * @hide
+     */
+    public static final int FRAME_RATE_CATEGORY_REASON_UNKNOWN = 0x0000_0000;
+
+    /**
+     * This indicates that the frame rate category was chosen because it was a small area update.
+     * @hide
+     */
+    public static final int FRAME_RATE_CATEGORY_REASON_SMALL = 0x0100_0000;
+
+    /**
+     * This indicates that the frame rate category was chosen because it was an intermittent update.
+     * @hide
+     */
+    public static final int FRAME_RATE_CATEGORY_REASON_INTERMITTENT = 0x0200_0000;
+
+    /**
+     * This indicates that the frame rate category was chosen because it was a large View.
+     * @hide
+     */
+    public static final int FRAME_RATE_CATEGORY_REASON_LARGE = 0x03000000;
+
+    /**
+     * This indicates that the frame rate category was chosen because it was requested.
+     * @hide
+     */
+    public static final int FRAME_RATE_CATEGORY_REASON_REQUESTED = 0x0400_0000;
+
+    /**
+     * This indicates that the frame rate category was chosen because an invalid frame rate was
+     * requested.
+     * @hide
+     */
+    public static final int FRAME_RATE_CATEGORY_REASON_INVALID = 0x0500_0000;
+
+    /**
+     * This indicates that the frame rate category was chosen because the view has a velocity
+     * @hide
+     */
+    public static final int FRAME_RATE_CATEGORY_REASON_VELOCITY = 0x0600_0000;
+
+    /**
+     * This indicates that the frame rate category was chosen because it is currently boosting.
+     * @hide
+     */
+    public static final int FRAME_RATE_CATEGORY_REASON_BOOST = 0x0800_0000;
+
+    /**
+     * This indicates that the frame rate category was chosen because it is currently having
+     * touch boost.
+     * @hide
+     */
+    public static final int FRAME_RATE_CATEGORY_REASON_TOUCH = 0x0900_0000;
+
+    /**
+     * This indicates that the frame rate category was chosen because it is currently having
+     * touch boost.
+     * @hide
+     */
+    public static final int FRAME_RATE_CATEGORY_REASON_CONFLICTED = 0x0A00_0000;
+
+    private static final int FRAME_RATE_CATEGORY_REASON_MASK = 0xFFFF_0000;
+
+    /**
+     * @hide
+     */
+    protected static boolean sToolkitSetFrameRateReadOnlyFlagValue;
+    private static boolean sToolkitMetricsForFrameRateDecisionFlagValue;
+    private static final boolean sToolkitFrameRateDefaultNormalReadOnlyFlagValue =
+            toolkitFrameRateDefaultNormalReadOnly();
+    private static final boolean sToolkitFrameRateBySizeReadOnlyFlagValue =
+            toolkitFrameRateBySizeReadOnly();
+    private static final boolean sToolkitFrameRateSmallUsesPercentReadOnlyFlagValue =
+            toolkitFrameRateSmallUsesPercentReadOnly();
+    private static final boolean sToolkitFrameRateViewEnablingReadOnlyFlagValue =
+            toolkitFrameRateViewEnablingReadOnly();
+    private static boolean sToolkitFrameRateVelocityMappingReadOnlyFlagValue =
+            toolkitFrameRateVelocityMappingReadOnly();
+    private static boolean sToolkitFrameRateAnimationBugfix25q1FlagValue =
+            toolkitFrameRateAnimationBugfix25q1();
+    private static boolean sToolkitViewGroupFrameRateApiFlagValue =
+            toolkitViewgroupSetRequestedFrameRateApi();
+
+    // Used to set frame rate compatibility.
+    @Surface.FrameRateCompatibility int mFrameRateCompatibility =
+            FRAME_RATE_COMPATIBILITY_FIXED_SOURCE;
+
+    static {
+        EMPTY_STATE_SET = StateSet.get(0);
+
+        WINDOW_FOCUSED_STATE_SET = StateSet.get(StateSet.VIEW_STATE_WINDOW_FOCUSED);
+
+        SELECTED_STATE_SET = StateSet.get(StateSet.VIEW_STATE_SELECTED);
+        SELECTED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_SELECTED);
+
+        FOCUSED_STATE_SET = StateSet.get(StateSet.VIEW_STATE_FOCUSED);
+        FOCUSED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_FOCUSED);
+        FOCUSED_SELECTED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_SELECTED | StateSet.VIEW_STATE_FOCUSED);
+        FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_SELECTED
+                        | StateSet.VIEW_STATE_FOCUSED);
+
+        ENABLED_STATE_SET = StateSet.get(StateSet.VIEW_STATE_ENABLED);
+        ENABLED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_ENABLED);
+        ENABLED_SELECTED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_SELECTED | StateSet.VIEW_STATE_ENABLED);
+        ENABLED_SELECTED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_SELECTED
+                        | StateSet.VIEW_STATE_ENABLED);
+        ENABLED_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_FOCUSED | StateSet.VIEW_STATE_ENABLED);
+        ENABLED_FOCUSED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_FOCUSED
+                        | StateSet.VIEW_STATE_ENABLED);
+        ENABLED_FOCUSED_SELECTED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_SELECTED | StateSet.VIEW_STATE_FOCUSED
+                        | StateSet.VIEW_STATE_ENABLED);
+        ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_SELECTED
+                        | StateSet.VIEW_STATE_FOCUSED| StateSet.VIEW_STATE_ENABLED);
+
+        PRESSED_STATE_SET = StateSet.get(StateSet.VIEW_STATE_PRESSED);
+        PRESSED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_SELECTED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_SELECTED | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_SELECTED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_SELECTED
+                        | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_FOCUSED | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_FOCUSED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_FOCUSED
+                        | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_FOCUSED_SELECTED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_SELECTED | StateSet.VIEW_STATE_FOCUSED
+                        | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_SELECTED
+                        | StateSet.VIEW_STATE_FOCUSED | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_ENABLED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_ENABLED | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_ENABLED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_ENABLED
+                        | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_ENABLED_SELECTED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_SELECTED | StateSet.VIEW_STATE_ENABLED
+                        | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_ENABLED_SELECTED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_SELECTED
+                        | StateSet.VIEW_STATE_ENABLED | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_ENABLED_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_FOCUSED | StateSet.VIEW_STATE_ENABLED
+                        | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_ENABLED_FOCUSED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_FOCUSED
+                        | StateSet.VIEW_STATE_ENABLED | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_ENABLED_FOCUSED_SELECTED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_SELECTED | StateSet.VIEW_STATE_FOCUSED
+                        | StateSet.VIEW_STATE_ENABLED | StateSet.VIEW_STATE_PRESSED);
+        PRESSED_ENABLED_FOCUSED_SELECTED_WINDOW_FOCUSED_STATE_SET = StateSet.get(
+                StateSet.VIEW_STATE_WINDOW_FOCUSED | StateSet.VIEW_STATE_SELECTED
+                        | StateSet.VIEW_STATE_FOCUSED| StateSet.VIEW_STATE_ENABLED
+                        | StateSet.VIEW_STATE_PRESSED);
+
+        sToolkitSetFrameRateReadOnlyFlagValue = toolkitSetFrameRateReadOnly();
+        sToolkitMetricsForFrameRateDecisionFlagValue = toolkitMetricsForFrameRateDecision();
+        sCalculateBoundsInParentFromBoundsInScreenFlagValue =
+                calculateBoundsInParentFromBoundsInScreen();
+        sUseMeasureCacheDuringForceLayoutFlagValue = enableUseMeasureCacheDuringForceLayout();
+    }
+
+    /**
+     * Accessibility event types that are dispatched for text population.
+     */
+private static final int POPULATING_ACCESSIBILITY_EVENT_TYPES =
+            AccessibilityEvent.TYPE_VIEW_CLICKED
+            | AccessibilityEvent.TYPE_VIEW_LONG_CLICKED
+            | AccessibilityEvent.TYPE_VIEW_SELECTED
+            | AccessibilityEvent.TYPE_VIEW_FOCUSED
+            | AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+            | AccessibilityEvent.TYPE_VIEW_HOVER_ENTER
+            | AccessibilityEvent.TYPE_VIEW_HOVER_EXIT
+            | AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED
+            | AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED
+            | AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED
+            | AccessibilityEvent.TYPE_VIEW_TEXT_TRAVERSED_AT_MOVEMENT_GRANULARITY;
+
+    static final int DEBUG_CORNERS_COLOR = Color.rgb(63, 127, 255);
+
+    static final int DEBUG_CORNERS_SIZE_DIP = 8;
+
+    /**
+     * Temporary Rect currently for use in setBackground().  This will probably
+     * be extended in the future to hold our own class with more than just
+     * a Rect. :)
+     */
+    static final ThreadLocal<Rect> sThreadLocal = ThreadLocal.withInitial(Rect::new);
+
+    /**
+     * Map used to store views' tags.
+     */
+    @UnsupportedAppUsage
+    private SparseArray<Object> mKeyedTags;
+
+    /**
+     * The next available accessibility id.
+     */
+    private static int sNextAccessibilityViewId;
+
+    /**
+     * The animation currently associated with this view.
+     * @hide
+     */
+    protected Animation mCurrentAnimation = null;
+
+    /**
+     * Width as measured during measure pass.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "measurement")
+    @UnsupportedAppUsage
+    int mMeasuredWidth;
+
+    /**
+     * Height as measured during measure pass.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "measurement")
+    @UnsupportedAppUsage
+    int mMeasuredHeight;
+
+    /**
+     * Flag to indicate that this view was marked INVALIDATED, or had its display list
+     * invalidated, prior to the current drawing iteration. If true, the view must re-draw
+     * its display list. This flag, used only when hw accelerated, allows us to clear the
+     * flag while retaining this information until it's needed (at getDisplayList() time and
+     * in drawChild(), when we decide to draw a view's children's display lists into our own).
+     *
+     * {@hide}
+     */
+    @UnsupportedAppUsage
+    boolean mRecreateDisplayList = false;
+
+    /**
+     * The view's identifier.
+     * {@hide}
+     *
+     * @see #setId(int)
+     * @see #getId()
+     */
+    @IdRes
+    @ViewDebug.ExportedProperty(resolveId = true)
+    int mID = NO_ID
