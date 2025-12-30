@@ -4347,3 +4347,1358 @@ private static final int POPULATING_ACCESSIBILITY_EVENT_TYPES =
      * Flag to hide the center system info area.
      */
     public static final int STATUS_BAR_DISABLE_SYSTEM_INFO = 0x00100000;
+ /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to hide only the home button.  Don't use this
+     * unless you're a special part of the system UI (i.e., setup wizard, keyguard).
+     */
+    @UnsupportedAppUsage
+    public static final int STATUS_BAR_DISABLE_HOME = 0x00200000;
+
+    /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to hide only the back button. Don't use this
+     * unless you're a special part of the system UI (i.e., setup wizard, keyguard).
+     */
+    @UnsupportedAppUsage
+    public static final int STATUS_BAR_DISABLE_BACK = 0x00400000;
+
+    /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to hide only the clock.  You might use this if your activity has
+     * its own clock making the status bar's clock redundant.
+     */
+    public static final int STATUS_BAR_DISABLE_CLOCK = 0x00800000;
+
+    /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to hide only the recent apps button. Don't use this
+     * unless you're a special part of the system UI (i.e., setup wizard, keyguard).
+     */
+    @UnsupportedAppUsage
+    public static final int STATUS_BAR_DISABLE_RECENT = 0x01000000;
+
+    /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to disable the global search gesture. Don't use this
+     * unless you're a special part of the system UI (i.e., setup wizard, keyguard).
+     */
+    public static final int STATUS_BAR_DISABLE_SEARCH = 0x02000000;
+
+    /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to disable the ongoing call chip.
+     */
+    public static final int STATUS_BAR_DISABLE_ONGOING_CALL_CHIP = 0x04000000;
+
+    /**
+     * @hide
+     */
+    public static final int PUBLIC_STATUS_BAR_VISIBILITY_MASK = 0x00003FF7;
+
+    /**
+     * These are the system UI flags that can be cleared by events outside
+     * of an application.  Currently this is just the ability to tap on the
+     * screen while hiding the navigation bar to have it return.
+     * @hide
+     */
+    public static final int SYSTEM_UI_CLEARABLE_FLAGS =
+            SYSTEM_UI_FLAG_LOW_PROFILE | SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            | SYSTEM_UI_FLAG_FULLSCREEN;
+
+    /**
+     * Flags that can impact the layout in relation to system UI.
+     *
+     * @deprecated System UI layout flags are deprecated.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_LAYOUT_FLAGS =
+            SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+
+    /** @hide */
+    @IntDef(flag = true, prefix = { "FIND_VIEWS_" }, value = {
+            FIND_VIEWS_WITH_TEXT,
+            FIND_VIEWS_WITH_CONTENT_DESCRIPTION
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FindViewFlags {}
+
+    /**
+     * Find views that render the specified text.
+     *
+     * @see #findViewsWithText(ArrayList, CharSequence, int)
+     */
+    public static final int FIND_VIEWS_WITH_TEXT = 0x00000001;
+
+    /**
+     * Find find views that contain the specified content description.
+     *
+     * @see #findViewsWithText(ArrayList, CharSequence, int)
+     */
+    public static final int FIND_VIEWS_WITH_CONTENT_DESCRIPTION = 0x00000002;
+
+    /**
+     * Find views that contain {@link AccessibilityNodeProvider}. Such
+     * a View is a root of virtual view hierarchy and may contain the searched
+     * text. If this flag is set Views with providers are automatically
+     * added and it is a responsibility of the client to call the APIs of
+     * the provider to determine whether the virtual tree rooted at this View
+     * contains the text, i.e. getting the list of {@link AccessibilityNodeInfo}s
+     * representing the virtual views with this text.
+     *
+     * @see #findViewsWithText(ArrayList, CharSequence, int)
+     *
+     * @hide
+     */
+    public static final int FIND_VIEWS_WITH_ACCESSIBILITY_NODE_PROVIDERS = 0x00000004;
+
+    /**
+     * The undefined cursor position.
+     *
+     * @hide
+     */
+    public static final int ACCESSIBILITY_CURSOR_POSITION_UNDEFINED = -1;
+
+    /**
+     * Indicates that the screen has changed state and is now off.
+     *
+     * @see #onScreenStateChanged(int)
+     */
+    public static final int SCREEN_STATE_OFF = 0x0;
+
+    /**
+     * Indicates that the screen has changed state and is now on.
+     *
+     * @see #onScreenStateChanged(int)
+     */
+    public static final int SCREEN_STATE_ON = 0x1;
+
+    /**
+     * Indicates no axis of view scrolling.
+     */
+    public static final int SCROLL_AXIS_NONE = 0;
+
+    /**
+     * Indicates scrolling along the horizontal axis.
+     */
+    public static final int SCROLL_AXIS_HORIZONTAL = 1 << 0;
+
+    /**
+     * Indicates scrolling along the vertical axis.
+     */
+    public static final int SCROLL_AXIS_VERTICAL = 1 << 1;
+
+    /**
+     * Controls the over-scroll mode for this view.
+     * See {@link #overScrollBy(int, int, int, int, int, int, int, int, boolean)},
+     * {@link #OVER_SCROLL_ALWAYS}, {@link #OVER_SCROLL_IF_CONTENT_SCROLLS},
+     * and {@link #OVER_SCROLL_NEVER}.
+     */
+    private int mOverScrollMode;
+
+    /**
+     * The parent this view is attached to.
+     * {@hide}
+     *
+     * @see #getParent()
+     */
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    protected ViewParent mParent;
+
+    /**
+     * {@hide}
+     *
+     * Not available for general use. If you need help, hang up and then dial one of the following
+     * public APIs:
+     *
+     * @see #isAttachedToWindow() for current attach state
+     * @see #onAttachedToWindow() for subclasses performing work when becoming attached
+     * @see #onDetachedFromWindow() for subclasses performing work when becoming detached
+     * @see OnAttachStateChangeListener for other code performing work on attach/detach
+     * @see #getHandler() for posting messages to this view's UI thread/looper
+     * @see #getParent() for interacting with the parent chain
+     * @see #getWindowToken() for the current window token
+     * @see #getRootView() for the view at the root of the attached hierarchy
+     * @see #getDisplay() for the Display this view is presented on
+     * @see #getRootWindowInsets() for the current insets applied to the whole attached window
+     * @see #hasWindowFocus() for whether the attached window is currently focused
+     * @see #getWindowVisibility() for checking the visibility of the attached window
+     */
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    AttachInfo mAttachInfo;
+
+    /**
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(flagMapping = {
+        @ViewDebug.FlagToString(mask = PFLAG_FORCE_LAYOUT, equals = PFLAG_FORCE_LAYOUT,
+                name = "FORCE_LAYOUT"),
+        @ViewDebug.FlagToString(mask = PFLAG_LAYOUT_REQUIRED, equals = PFLAG_LAYOUT_REQUIRED,
+                name = "LAYOUT_REQUIRED"),
+        @ViewDebug.FlagToString(mask = PFLAG_DRAWING_CACHE_VALID, equals = PFLAG_DRAWING_CACHE_VALID,
+            name = "DRAWING_CACHE_INVALID", outputIf = false),
+        @ViewDebug.FlagToString(mask = PFLAG_DRAWN, equals = PFLAG_DRAWN, name = "DRAWN", outputIf = true),
+        @ViewDebug.FlagToString(mask = PFLAG_DRAWN, equals = PFLAG_DRAWN, name = "NOT_DRAWN", outputIf = false),
+        @ViewDebug.FlagToString(mask = PFLAG_DIRTY_MASK, equals = PFLAG_DIRTY, name = "DIRTY")
+    }, formatToHexString = true)
+
+    /* @hide */
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P, trackingBug = 123769414)
+    public int mPrivateFlags;
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P, trackingBug = 123768943)
+    int mPrivateFlags2;
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P, trackingBug = 129147060)
+    int mPrivateFlags3;
+
+    private int mPrivateFlags4;
+
+    /**
+     * This view's request for the visibility of the status bar.
+     * @hide
+     */
+    @ViewDebug.ExportedProperty(flagMapping = {
+            @ViewDebug.FlagToString(mask = SYSTEM_UI_FLAG_LOW_PROFILE,
+                    equals = SYSTEM_UI_FLAG_LOW_PROFILE,
+                    name = "LOW_PROFILE"),
+            @ViewDebug.FlagToString(mask = SYSTEM_UI_FLAG_HIDE_NAVIGATION,
+                    equals = SYSTEM_UI_FLAG_HIDE_NAVIGATION,
+                    name = "HIDE_NAVIGATION"),
+            @ViewDebug.FlagToString(mask = SYSTEM_UI_FLAG_FULLSCREEN,
+                    equals = SYSTEM_UI_FLAG_FULLSCREEN,
+                    name = "FULLSCREEN"),
+            @ViewDebug.FlagToString(mask = SYSTEM_UI_FLAG_LAYOUT_STABLE,
+                    equals = SYSTEM_UI_FLAG_LAYOUT_STABLE,
+                    name = "LAYOUT_STABLE"),
+            @ViewDebug.FlagToString(mask = SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION,
+                    equals = SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION,
+                    name = "LAYOUT_HIDE_NAVIGATION"),
+            @ViewDebug.FlagToString(mask = SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN,
+                    equals = SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN,
+                    name = "LAYOUT_FULLSCREEN"),
+            @ViewDebug.FlagToString(mask = SYSTEM_UI_FLAG_IMMERSIVE,
+                    equals = SYSTEM_UI_FLAG_IMMERSIVE,
+                    name = "IMMERSIVE"),
+            @ViewDebug.FlagToString(mask = SYSTEM_UI_FLAG_IMMERSIVE_STICKY,
+                    equals = SYSTEM_UI_FLAG_IMMERSIVE_STICKY,
+                    name = "IMMERSIVE_STICKY"),
+            @ViewDebug.FlagToString(mask = SYSTEM_UI_FLAG_LIGHT_STATUS_BAR,
+                    equals = SYSTEM_UI_FLAG_LIGHT_STATUS_BAR,
+                    name = "LIGHT_STATUS_BAR"),
+            @ViewDebug.FlagToString(mask = SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR,
+                    equals = SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR,
+                    name = "LIGHT_NAVIGATION_BAR"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_EXPAND,
+                    equals = STATUS_BAR_DISABLE_EXPAND,
+                    name = "STATUS_BAR_DISABLE_EXPAND"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_NOTIFICATION_ICONS,
+                    equals = STATUS_BAR_DISABLE_NOTIFICATION_ICONS,
+                    name = "STATUS_BAR_DISABLE_NOTIFICATION_ICONS"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_NOTIFICATION_ALERTS,
+                    equals = STATUS_BAR_DISABLE_NOTIFICATION_ALERTS,
+                    name = "STATUS_BAR_DISABLE_NOTIFICATION_ALERTS"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_NOTIFICATION_TICKER,
+                    equals = STATUS_BAR_DISABLE_NOTIFICATION_TICKER,
+                    name = "STATUS_BAR_DISABLE_NOTIFICATION_TICKER"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_SYSTEM_INFO,
+                    equals = STATUS_BAR_DISABLE_SYSTEM_INFO,
+                    name = "STATUS_BAR_DISABLE_SYSTEM_INFO"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_HOME,
+                    equals = STATUS_BAR_DISABLE_HOME,
+                    name = "STATUS_BAR_DISABLE_HOME"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_BACK,
+                    equals = STATUS_BAR_DISABLE_BACK,
+                    name = "STATUS_BAR_DISABLE_BACK"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_CLOCK,
+                    equals = STATUS_BAR_DISABLE_CLOCK,
+                    name = "STATUS_BAR_DISABLE_CLOCK"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_RECENT,
+                    equals = STATUS_BAR_DISABLE_RECENT,
+                    name = "STATUS_BAR_DISABLE_RECENT"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_SEARCH,
+                    equals = STATUS_BAR_DISABLE_SEARCH,
+                    name = "STATUS_BAR_DISABLE_SEARCH"),
+            @ViewDebug.FlagToString(mask = STATUS_BAR_DISABLE_ONGOING_CALL_CHIP,
+                    equals = STATUS_BAR_DISABLE_ONGOING_CALL_CHIP,
+                    name = "STATUS_BAR_DISABLE_ONGOING_CALL_CHIP")
+    }, formatToHexString = true)
+    @SystemUiVisibility
+    int mSystemUiVisibility;
+    /**
+     * @hide
+     */
+    @IntDef(flag = true, prefix = "", value = {
+            SYSTEM_UI_FLAG_LOW_PROFILE,
+            SYSTEM_UI_FLAG_HIDE_NAVIGATION,
+            SYSTEM_UI_FLAG_FULLSCREEN,
+            SYSTEM_UI_FLAG_LAYOUT_STABLE,
+            SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION,
+            SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN,
+            SYSTEM_UI_FLAG_IMMERSIVE,
+            SYSTEM_UI_FLAG_IMMERSIVE_STICKY,
+            SYSTEM_UI_FLAG_LIGHT_STATUS_BAR,
+            SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR,
+            STATUS_BAR_DISABLE_EXPAND,
+            STATUS_BAR_DISABLE_NOTIFICATION_ICONS,
+            STATUS_BAR_DISABLE_NOTIFICATION_ALERTS,
+            STATUS_BAR_DISABLE_NOTIFICATION_TICKER,
+            STATUS_BAR_DISABLE_SYSTEM_INFO,
+            STATUS_BAR_DISABLE_HOME,
+            STATUS_BAR_DISABLE_BACK,
+            STATUS_BAR_DISABLE_CLOCK,
+            STATUS_BAR_DISABLE_RECENT,
+            STATUS_BAR_DISABLE_SEARCH,
+            STATUS_BAR_DISABLE_ONGOING_CALL_CHIP,
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface SystemUiVisibility {}
+
+    /**
+     * Reference count for transient state.
+     * @see #setHasTransientState(boolean)
+     */
+    int mTransientStateCount = 0;
+
+    /**
+     * Count of how many windows this view has been attached to.
+     */
+    int mWindowAttachCount;
+
+    /**
+     * The layout parameters associated with this view and used by the parent
+     * {@link android.view.ViewGroup} to determine how this view should be
+     * laid out.
+     *
+     * The field should not be used directly. Instead {@link #getLayoutParams()} and {@link
+     * #setLayoutParams(ViewGroup.LayoutParams)} should be used. The setter guarantees internal
+     * state correctness of the class.
+     * {@hide}
+     */
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    protected ViewGroup.LayoutParams mLayoutParams;
+
+    /**
+     * The view flags hold various views states.
+     *
+     * Use {@link #setTransitionVisibility(int)} to change the visibility of this view without
+     * triggering updates.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(formatToHexString = true)
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    int mViewFlags;
+
+    static class TransformationInfo {
+        /**
+         * The transform matrix for the View. This transform is calculated internally
+         * based on the translation, rotation, and scale properties.
+         *
+         * Do *not* use this variable directly; instead call getMatrix(), which will
+         * load the value from the View's RenderNode.
+         */
+        private final Matrix mMatrix = new Matrix();
+
+        /**
+         * The inverse transform matrix for the View. This transform is calculated
+         * internally based on the translation, rotation, and scale properties.
+         *
+         * Do *not* use this variable directly; instead call getInverseMatrix(),
+         * which will load the value from the View's RenderNode.
+         */
+        private Matrix mInverseMatrix;
+
+        /**
+         * The opacity of the View. This is a value from 0 to 1, where 0 means
+         * completely transparent and 1 means completely opaque.
+         */
+        @ViewDebug.ExportedProperty
+        private float mAlpha = 1f;
+
+        /**
+         * The opacity of the view as manipulated by the Fade transition. This is a
+         * property only used by transitions, which is composited with the other alpha
+         * values to calculate the final visual alpha value.
+         */
+        float mTransitionAlpha = 1f;
+    }
+  /** @hide */
+    @UnsupportedAppUsage
+    public TransformationInfo mTransformationInfo;
+
+    /**
+     * Current clip bounds. to which all drawing of this view are constrained.
+     */
+    @ViewDebug.ExportedProperty(category = "drawing")
+    Rect mClipBounds = null;
+
+    private boolean mLastIsOpaque;
+
+    /**
+     * The distance in pixels from the left edge of this view's parent
+     * to the left edge of this view.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "layout")
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    protected int mLeft;
+    /**
+     * The mLeft from the previous frame. Used for detecting movement for purposes of variable
+     * refresh rate.
+     */
+    private int mLastFrameLeft;
+    /**
+     * The distance in pixels from the left edge of this view's parent
+     * to the right edge of this view.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "layout")
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    protected int mRight;
+    /**
+     * The distance in pixels from the top edge of this view's parent
+     * to the top edge of this view.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "layout")
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    protected int mTop;
+    /**
+     * The mTop from the previous frame. Used for detecting movement for purposes of variable
+     * refresh rate.
+     */
+    private int mLastFrameTop;
+    /**
+     * The distance in pixels from the top edge of this view's parent
+     * to the bottom edge of this view.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "layout")
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    protected int mBottom;
+
+    /**
+     * The offset, in pixels, by which the content of this view is scrolled
+     * horizontally.
+     * Please use {@link View#getScrollX()} and {@link View#setScrollX(int)} instead of
+     * accessing these directly.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "scrolling")
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    protected int mScrollX;
+    /**
+     * The offset, in pixels, by which the content of this view is scrolled
+     * vertically.
+     * Please use {@link View#getScrollY()} and {@link View#setScrollY(int)} instead of
+     * accessing these directly.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "scrolling")
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    protected int mScrollY;
+
+    /**
+     * The final computed left padding in pixels that is used for drawing. This is the distance in
+     * pixels between the left edge of this view and the left edge of its content.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "padding")
+    @UnsupportedAppUsage
+    protected int mPaddingLeft = 0;
+    /**
+     * The final computed right padding in pixels that is used for drawing. This is the distance in
+     * pixels between the right edge of this view and the right edge of its content.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "padding")
+    @UnsupportedAppUsage
+    protected int mPaddingRight = 0;
+    /**
+     * The final computed top padding in pixels that is used for drawing. This is the distance in
+     * pixels between the top edge of this view and the top edge of its content.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "padding")
+    @UnsupportedAppUsage
+    protected int mPaddingTop;
+    /**
+     * The final computed bottom padding in pixels that is used for drawing. This is the distance in
+     * pixels between the bottom edge of this view and the bottom edge of its content.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(category = "padding")
+    @UnsupportedAppUsage
+    protected int mPaddingBottom;
+
+    /**
+     * The amount of pixel offset applied to the left edge of this view's handwriting bounds.
+     */
+    private float mHandwritingBoundsOffsetLeft;
+
+    /**
+     * The amount of pixel offset applied to the top edge of this view's handwriting bounds.
+     */
+    private float mHandwritingBoundsOffsetTop;
+
+    /**
+     * The amount of pixel offset applied to the right edge of this view's handwriting bounds.
+     */
+    private float mHandwritingBoundsOffsetRight;
+
+    /**
+     * The amount of pixel offset applied to the bottom edge of this view's handwriting bounds.
+     */
+    private float mHandwritingBoundsOffsetBottom;
+
+    /**
+     * The layout insets in pixels, that is the distance in pixels between the
+     * visible edges of this view its bounds.
+     */
+    private Insets mLayoutInsets;
+
+    /**
+     * Briefly describes the state of the view and is primarily used for accessibility support.
+     */
+    private CharSequence mStateDescription;
+
+    /**
+     * Briefly describes the view and is primarily used for accessibility support.
+     */
+    private CharSequence mContentDescription;
+
+    /**
+     * Brief supplemental information for view and is primarily used for accessibility support.
+     */
+    private CharSequence mSupplementalDescription;
+
+    /**
+     * If this view represents a distinct part of the window, it can have a title that labels the
+     * area.
+     */
+    private CharSequence mAccessibilityPaneTitle;
+
+    /**
+     * Describes whether this view should only allow interactions from
+     * {@link android.accessibilityservice.AccessibilityService}s with the
+     * {@link android.accessibilityservice.AccessibilityServiceInfo#isAccessibilityTool} property
+     * set to true.
+     */
+    private int mExplicitAccessibilityDataSensitive = ACCESSIBILITY_DATA_SENSITIVE_AUTO;
+    /** Used to calculate and cache {@link #isAccessibilityDataSensitive()}. */
+    private int mInferredAccessibilityDataSensitive = ACCESSIBILITY_DATA_SENSITIVE_AUTO;
+
+    /**
+     * Specifies the id of a view for which this view serves as a label for
+     * accessibility purposes.
+     */
+    private int mLabelForId = View.NO_ID;
+
+    /**
+     * Predicate for matching labeled view id with its label for
+     * accessibility purposes.
+     */
+    private MatchLabelForPredicate mMatchLabelForPredicate;
+
+    /**
+     * Specifies a view before which this one is visited in accessibility traversal.
+     */
+    private int mAccessibilityTraversalBeforeId = NO_ID;
+
+    /**
+     * Specifies a view after which this one is visited in accessibility traversal.
+     */
+    private int mAccessibilityTraversalAfterId = NO_ID;
+
+    /**
+     * Predicate for matching a view by its id.
+     */
+    private MatchIdPredicate mMatchIdPredicate;
+
+    /**
+     * The right padding after RTL resolution, but before taking account of scroll bars.
+     *
+     * @hide
+     */
+    @ViewDebug.ExportedProperty(category = "padding")
+    protected int mUserPaddingRight;
+
+    /**
+     * The resolved bottom padding before taking account of scroll bars.
+     *
+     * @hide
+     */
+    @ViewDebug.ExportedProperty(category = "padding")
+    protected int mUserPaddingBottom;
+
+    /**
+     * The left padding after RTL resolution, but before taking account of scroll bars.
+     *
+     * @hide
+     */
+    @ViewDebug.ExportedProperty(category = "padding")
+    protected int mUserPaddingLeft;
+
+    /**
+     * Cache the paddingStart set by the user to append to the scrollbar's size.
+     *
+     */
+    @ViewDebug.ExportedProperty(category = "padding")
+    int mUserPaddingStart;
+
+    /**
+     * Cache the paddingEnd set by the user to append to the scrollbar's size.
+     *
+     */
+    @ViewDebug.ExportedProperty(category = "padding")
+    int mUserPaddingEnd;
+
+    /**
+     * The left padding as set by a setter method, a background's padding, or via XML property
+     * resolution. This value is the padding before LTR resolution or taking account of scrollbars.
+     *
+     * @hide
+     */
+    int mUserPaddingLeftInitial;
+
+    /**
+     * The right padding as set by a setter method, a background's padding, or via XML property
+     * resolution. This value is the padding before LTR resolution or taking account of scrollbars.
+     *
+     * @hide
+     */
+    int mUserPaddingRightInitial;
+
+    /**
+     * Default undefined padding
+     */
+    private static final int UNDEFINED_PADDING = Integer.MIN_VALUE;
+
+    /**
+     * Cache if a left padding has been defined explicitly via padding, horizontal padding,
+     * or leftPadding in XML, or by setPadding(...) or setRelativePadding(...)
+     */
+    private boolean mLeftPaddingDefined = false;
+
+    /**
+     * Cache if a right padding has been defined explicitly via padding, horizontal padding,
+     * or rightPadding in XML, or by setPadding(...) or setRelativePadding(...)
+     */
+    private boolean mRightPaddingDefined = false;
+
+    /**
+     * @hide
+     */
+    int mOldWidthMeasureSpec = Integer.MIN_VALUE;
+    /**
+     * @hide
+     */
+    int mOldHeightMeasureSpec = Integer.MIN_VALUE;
+
+    private LongSparseLongArray mMeasureCache;
+
+    @ViewDebug.ExportedProperty(deepExport = true, prefix = "bg_")
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+    private Drawable mBackground;
+    private TintInfo mBackgroundTint;
+
+    @ViewDebug.ExportedProperty(deepExport = true, prefix = "fg_")
+    private ForegroundInfo mForegroundInfo;
+
+    private Drawable mScrollIndicatorDrawable;
+
+    /**
+     * RenderNode used for backgrounds.
+     * <p>
+     * When non-null and valid, this is expected to contain an up-to-date copy
+     * of the background drawable. It is cleared on temporary detach, and reset
+     * on cleanup.
+     * @hide
+     */
+    RenderNode mBackgroundRenderNode;
+
+    @UnsupportedAppUsage
+    private int mBackgroundResource;
+    private boolean mBackgroundSizeChanged;
+
+    /** The default focus highlight.
+     * @see #mDefaultFocusHighlightEnabled
+     * @see Drawable#hasFocusStateSpecified()
+     */
+    private Drawable mDefaultFocusHighlight;
+    private Drawable mDefaultFocusHighlightCache;
+    private boolean mDefaultFocusHighlightSizeChanged;
+    /**
+     * True if the default focus highlight is needed on the target device.
+     */
+    private static boolean sUseDefaultFocusHighlight;
+
+    /**
+     * True if zero-sized views can be focused.
+     */
+    private static boolean sCanFocusZeroSized;
+
+    /**
+     * Always assign focus if a focusable View is available.
+     */
+    private static boolean sAlwaysAssignFocus;
+
+    private String mTransitionName;
+
+    static class TintInfo {
+        ColorStateList mTintList;
+        BlendMode mBlendMode;
+        boolean mHasTintMode;
+        boolean mHasTintList;
+    }
+
+    private static class ForegroundInfo {
+        private Drawable mDrawable;
+        private TintInfo mTintInfo;
+        private int mGravity = Gravity.FILL;
+        private boolean mInsidePadding = true;
+        private boolean mBoundsChanged = true;
+        private final Rect mSelfBounds = new Rect();
+        private final Rect mOverlayBounds = new Rect();
+    }
+
+    static class ListenerInfo {
+
+        @UnsupportedAppUsage
+        ListenerInfo() {
+        }
+
+        /**
+         * Listener used to dispatch focus change events.
+         * This field should be made private, so it is hidden from the SDK.
+         * {@hide}
+         */
+        @UnsupportedAppUsage
+        protected OnFocusChangeListener mOnFocusChangeListener;
+
+        /**
+         * Listeners for layout change events.
+         */
+        private ArrayList<OnLayoutChangeListener> mOnLayoutChangeListeners;
+
+        protected OnScrollChangeListener mOnScrollChangeListener;
+
+        /**
+         * Listeners for attach events.
+         */
+        private CopyOnWriteArrayList<OnAttachStateChangeListener> mOnAttachStateChangeListeners;
+
+        /**
+         * Listener used to dispatch click events.
+         * This field should be made private, so it is hidden from the SDK.
+         * {@hide}
+         */
+        @UnsupportedAppUsage
+        public OnClickListener mOnClickListener;
+
+        /**
+         * Listener used to dispatch long click events.
+         * This field should be made private, so it is hidden from the SDK.
+         * {@hide}
+         */
+        @UnsupportedAppUsage
+        protected OnLongClickListener mOnLongClickListener;
+
+        /**
+         * Listener used to dispatch context click events. This field should be made private, so it
+         * is hidden from the SDK.
+         * {@hide}
+         */
+        protected OnContextClickListener mOnContextClickListener;
+
+        /**
+         * Listener used to build the context menu.
+         * This field should be made private, so it is hidden from the SDK.
+         * {@hide}
+         */
+        @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+        protected OnCreateContextMenuListener mOnCreateContextMenuListener;
+
+        @UnsupportedAppUsage
+        private OnKeyListener mOnKeyListener;
+
+        @UnsupportedAppUsage
+        private OnTouchListener mOnTouchListener;
+
+        @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+        private OnHoverListener mOnHoverListener;
+
+        @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+        private OnGenericMotionListener mOnGenericMotionListener;
+
+        @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+        private OnDragListener mOnDragListener;
+
+        private OnSystemUiVisibilityChangeListener mOnSystemUiVisibilityChangeListener;
+
+        OnApplyWindowInsetsListener mOnApplyWindowInsetsListener;
+
+        OnCapturedPointerListener mOnCapturedPointerListener;
+
+        private ArrayList<OnUnhandledKeyEventListener> mUnhandledKeyListeners;
+
+        WindowInsetsAnimation.Callback mWindowInsetsAnimationCallback;
+
+        /**
+         * This lives here since it's only valid for interactive views. This list is null
+         * until its first use.
+         */
+        private List<Rect> mSystemGestureExclusionRects = null;
+        private List<Rect> mKeepClearRects = null;
+        private List<Rect> mUnrestrictedKeepClearRects = null;
+        private boolean mPreferKeepClear = false;
+        private Rect mHandwritingArea = null;
+
+        /**
+         * Used to track {@link #mSystemGestureExclusionRects}, {@link #mKeepClearRects} and
+         * {@link #mHandwritingArea}.
+         */
+        public RenderNode.PositionUpdateListener mPositionUpdateListener;
+        private Runnable mPositionChangedUpdate;
+
+        /**
+         * Allows the application to implement custom scroll capture support.
+         */
+        ScrollCaptureCallback mScrollCaptureCallback;
+
+        @Nullable
+        private OnReceiveContentListener mOnReceiveContentListener;
+    }
+
+    @UnsupportedAppUsage
+    ListenerInfo mListenerInfo;
+
+    private static class TooltipInfo {
+        /**
+         * Text to be displayed in a tooltip popup.
+         */
+        @Nullable
+        CharSequence mTooltipText;
+
+        /**
+         * View-relative position of the tooltip anchor point.
+         */
+        int mAnchorX;
+        int mAnchorY;
+
+        /**
+         * The tooltip popup.
+         */
+        @Nullable
+        TooltipPopup mTooltipPopup;
+
+        /**
+         * Set to true if the tooltip was shown as a result of a long click.
+         */
+        boolean mTooltipFromLongClick;
+
+        /**
+         * Keep these Runnables so that they can be used to reschedule.
+         */
+        Runnable mShowTooltipRunnable;
+        Runnable mHideTooltipRunnable;
+
+        /**
+         * Hover move is ignored if it is within this distance in pixels from the previous one.
+         */
+        int mHoverSlop;
+
+        /**
+         * Update the anchor position if it significantly (that is by at least mHoverSlop)
+         * different from the previously stored position. Ignoring insignificant changes
+         * filters out the jitter which is typical for such input sources as stylus.
+         *
+         * @return True if the position has been updated.
+         */
+        private boolean updateAnchorPos(MotionEvent event) {
+            final int newAnchorX = (int) event.getX();
+            final int newAnchorY = (int) event.getY();
+            if (Math.abs(newAnchorX - mAnchorX) <= mHoverSlop
+                    && Math.abs(newAnchorY - mAnchorY) <= mHoverSlop) {
+                return false;
+            }
+            mAnchorX = newAnchorX;
+            mAnchorY = newAnchorY;
+            return true;
+        }
+
+        /**
+         *  Clear the anchor position to ensure that the next change is considered significant.
+         */
+        private void clearAnchorPos() {
+            mAnchorX = Integer.MAX_VALUE;
+            mAnchorY = Integer.MAX_VALUE;
+        }
+    }
+
+    TooltipInfo mTooltipInfo;
+
+    // Temporary values used to hold (x,y) coordinates when delegating from the
+    // two-arg performLongClick() method to the legacy no-arg version.
+    private float mLongClickX = Float.NaN;
+    private float mLongClickY = Float.NaN;
+
+    /**
+     * The application environment this view lives in.
+     * This field should be made private, so it is hidden from the SDK.
+     * {@hide}
+     */
+    @ViewDebug.ExportedProperty(deepExport = true)
+    @UnsupportedAppUsage
+    @UiContext
+    protected Context mContext;
+
+    @UnsupportedAppUsage
+    private final Resources mResources;
+
+    @UnsupportedAppUsage
+    private ScrollabilityCache mScrollCache;
+
+    private int[] mDrawableState = null;
+
+    ViewOutlineProvider mOutlineProvider = ViewOutlineProvider.BACKGROUND;
+
+    /**
+     * Animator that automatically runs based on state changes.
+     */
+    private StateListAnimator mStateListAnimator;
+
+    /**
+     * When this view has focus and the next focus is {@link #FOCUS_LEFT},
+     * the user may specify which view to go to next.
+     */
+    private int mNextFocusLeftId = View.NO_ID;
+
+    /**
+     * When this view has focus and the next focus is {@link #FOCUS_RIGHT},
+     * the user may specify which view to go to next.
+     */
+    private int mNextFocusRightId = View.NO_ID;
+
+    /**
+     * When this view has focus and the next focus is {@link #FOCUS_UP},
+     * the user may specify which view to go to next.
+     */
+    private int mNextFocusUpId = View.NO_ID;
+
+    /**
+     * When this view has focus and the next focus is {@link #FOCUS_DOWN},
+     * the user may specify which view to go to next.
+     */
+    private int mNextFocusDownId = View.NO_ID;
+
+    /**
+     * When this view has focus and the next focus is {@link #FOCUS_FORWARD},
+     * the user may specify which view to go to next.
+     */
+    int mNextFocusForwardId = View.NO_ID;
+
+    /**
+     * User-specified next keyboard navigation cluster in the {@link #FOCUS_FORWARD} direction.
+     *
+     * @see #findUserSetNextKeyboardNavigationCluster(View, int)
+     */
+    int mNextClusterForwardId = View.NO_ID;
+
+    /**
+     * Whether this View should use a default focus highlight when it gets focused but doesn't
+     * have {@link android.R.attr#state_focused} defined in its background.
+     */
+    boolean mDefaultFocusHighlightEnabled = true;
+
+    private CheckForLongPress mPendingCheckForLongPress;
+    @UnsupportedAppUsage
+    private CheckForTap mPendingCheckForTap = null;
+    private PerformClick mPerformClick;
+    private SendViewScrolledAccessibilityEvent mSendViewScrolledAccessibilityEvent;
+    private SendAccessibilityEventThrottle mSendStateChangedAccessibilityEvent;
+    private UnsetPressedState mUnsetPressedState;
+
+    /**
+     * Whether the long press's action has been invoked.  The tap's action is invoked on the
+     * up event while a long press is invoked as soon as the long press duration is reached, so
+     * a long press could be performed before the tap is checked, in which case the tap's action
+     * should not be invoked.
+     */
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P, trackingBug = 115609023)
+    private boolean mHasPerformedLongPress;
+
+    /**
+     * Whether a context click button is currently pressed down. This is true when the stylus is
+     * touching the screen and the primary button has been pressed, or if a mouse's right button is
+     * pressed. This is false once the button is released or if the stylus has been lifted.
+     */
+    private boolean mInContextButtonPress;
+
+    /**
+     * Whether the next up event should be ignored for the purposes of gesture recognition. This is
+     * true after a stylus button press has occured, when the next up event should not be recognized
+     * as a tap.
+     */
+    private boolean mIgnoreNextUpEvent;
+
+    /**
+     * The minimum height of the view. We'll try our best to have the height
+     * of this view to at least this amount.
+     */
+    @ViewDebug.ExportedProperty(category = "measurement")
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    private int mMinHeight;
+
+    /**
+     * The minimum width of the view. We'll try our best to have the width
+     * of this view to at least this amount.
+     */
+    @ViewDebug.ExportedProperty(category = "measurement")
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P)
+    private int mMinWidth;
+
+    /**
+     * The delegate to handle touch events that are physically in this view
+     * but should be handled by another view.
+     */
+    private TouchDelegate mTouchDelegate = null;
+
+    /**
+     * While touch exploration is in use, set to true when hovering across boundaries and
+     * inside the touch area of the delegate at receiving {@link MotionEvent#ACTION_HOVER_ENTER}
+     * or {@link MotionEvent#ACTION_HOVER_MOVE}. False when leaving boundaries or receiving a
+     * {@link MotionEvent#ACTION_HOVER_EXIT}.
+     * Note that children of view group are excluded in the touch area.
+     * @see #dispatchTouchExplorationHoverEvent
+     */
+    private boolean mHoveringTouchDelegate = false;
+
+    // These two fields are set if the view is a handwriting delegator.
+    private Runnable mHandwritingDelegatorCallback;
+    private String mAllowedHandwritingDelegatePackageName;
+
+    // These three fields are set if the view is a handwriting delegate.
+    private boolean mIsHandwritingDelegate;
+    private String mAllowedHandwritingDelegatorPackageName;
+    private @InputMethodManager.HandwritingDelegateFlags int mHandwritingDelegateFlags;
+
+    /**
+     * Solid color to use as a background when creating the drawing cache. Enables
+     * the cache to use 16 bit bitmaps instead of 32 bit.
+     */
+    private int mDrawingCacheBackgroundColor = 0;
+
+    /**
+     * Special tree observer used when mAttachInfo is null.
+     */
+    private ViewTreeObserver mFloatingTreeObserver;
+
+    /**
+     * Cache the touch slop from the context that created the view.
+     */
+    private int mTouchSlop;
+
+    /**
+     * Cache the ambiguous gesture multiplier from the context that created the view.
+     */
+    private float mAmbiguousGestureMultiplier;
+
+    /**
+     * Object that handles automatic animation of view properties.
+     */
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.P, trackingBug = 115609023)
+    private ViewPropertyAnimator mAnimator = null;
+
+    /**
+     * List of registered FrameMetricsObservers.
+     */
+    private ArrayList<FrameMetricsObserver> mFrameMetricsObservers;
+
+    /**
+     * Flag indicating that a drag can cross window boundaries.  When
+     * {@link #startDragAndDrop(ClipData, DragShadowBuilder, Object, int)} is called
+     * with this flag set, all visible applications with targetSdkVersion >=
+     * {@link android.os.Build.VERSION_CODES#N API 24} will be able to participate
+     * in the drag operation and receive the dragged content.
+     *
+     * <p>If this is the only flag set, then the drag recipient will only have access to text data
+     * and intents contained in the {@link ClipData} object. Access to URIs contained in the
+     * {@link ClipData} is determined by other DRAG_FLAG_GLOBAL_* flags</p>
+     */
+    public static final int DRAG_FLAG_GLOBAL = 1 << 8;  // 256
+
+    /**
+     * When this flag is used with {@link #DRAG_FLAG_GLOBAL}, the drag recipient will be able to
+     * request read access to the content URI(s) contained in the {@link ClipData} object.
+     * @see android.content.Intent#FLAG_GRANT_READ_URI_PERMISSION
+     */
+    public static final int DRAG_FLAG_GLOBAL_URI_READ = Intent.FLAG_GRANT_READ_URI_PERMISSION;
+
+    /**
+     * When this flag is used with {@link #DRAG_FLAG_GLOBAL}, the drag recipient will be able to
+     * request write access to the content URI(s) contained in the {@link ClipData} object.
+     * @see android.content.Intent#FLAG_GRANT_WRITE_URI_PERMISSION
+     */
+    public static final int DRAG_FLAG_GLOBAL_URI_WRITE = Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+
+    /**
+     * When this flag is used with {@link #DRAG_FLAG_GLOBAL_URI_READ} and/or {@link
+     * #DRAG_FLAG_GLOBAL_URI_WRITE}, the URI permission grant can be persisted across device
+     * reboots until explicitly revoked with
+     * {@link android.content.Context#revokeUriPermission(Uri, int)} Context.revokeUriPermission}.
+     * @see android.content.Intent#FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+     */
+    public static final int DRAG_FLAG_GLOBAL_PERSISTABLE_URI_PERMISSION =
+            Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION;
+
+    /**
+     * When this flag is used with {@link #DRAG_FLAG_GLOBAL_URI_READ} and/or {@link
+     * #DRAG_FLAG_GLOBAL_URI_WRITE}, the URI permission grant applies to any URI that is a prefix
+     * match against the original granted URI.
+     * @see android.content.Intent#FLAG_GRANT_PREFIX_URI_PERMISSION
+     */
+    public static final int DRAG_FLAG_GLOBAL_PREFIX_URI_PERMISSION =
+            Intent.FLAG_GRANT_PREFIX_URI_PERMISSION;
+
+    /**
+     * Flag indicating that the drag shadow will be opaque.  When
+     * {@link #startDragAndDrop(ClipData, DragShadowBuilder, Object, int)} is called
+     * with this flag set, the drag shadow will be opaque, otherwise, it will be semitransparent.
+     */
+    public static final int DRAG_FLAG_OPAQUE = 1 << 9;
+
+    /**
+     * Flag indicating that the drag was initiated with
+     * {@link AccessibilityNodeInfo.AccessibilityAction#ACTION_DRAG_START}. When
+     * {@link #startDragAndDrop(ClipData, DragShadowBuilder, Object, int)} is called, this
+     * is used by the system to perform a drag without animations.
+     */
+    public static final int DRAG_FLAG_ACCESSIBILITY_ACTION = 1 << 10;
+
+    /**
+     * Flag indicating that the caller desires to take ownership of the drag surface for handling
+     * the animation associated with an unhandled drag.  It is mainly useful if the view starting
+     * a global drag changes visibility during the gesture and the default animation of animating
+     * the surface back to the origin is not sufficient.
+     *
+     * The calling app must hold the {@link android.Manifest.permission#START_TASKS_FROM_RECENTS}
+     * permission and will receive the drag surface as a part of
+     * {@link action.view.DragEvent#ACTION_DRAG_ENDED} only if the drag event's
+     * {@link action.view.DragEvent#getDragResult()} is {@code false}.  The caller is responsible
+     * for removing the surface after its animation.
+     *
+     * This flag has no effect if the system decides that a cancel-drag animation does not need to
+     * occur.
+     * @hide
+     */
+    public static final int DRAG_FLAG_REQUEST_SURFACE_FOR_RETURN_ANIMATION = 1 << 11;
+
+    /**
+     * Flag indicating that a drag can cross window boundaries (within the same application).  When
+     * {@link #startDragAndDrop(ClipData, DragShadowBuilder, Object, int)} is called
+     * with this flag set, only visible windows belonging to the same application (ie. share the
+     * same UID) with targetSdkVersion >= {@link android.os.Build.VERSION_CODES#N API 24} will be
+     * able to participate in the drag operation and receive the dragged content.
+     *
+     * If both DRAG_FLAG_GLOBAL_SAME_APPLICATION and DRAG_FLAG_GLOBAL are set, then
+     * DRAG_FLAG_GLOBAL_SAME_APPLICATION takes precedence and the drag will only go to visible
+     * windows from the same application.
+     */
+    @FlaggedApi(FLAG_DELEGATE_UNHANDLED_DRAGS)
+    public static final int DRAG_FLAG_GLOBAL_SAME_APPLICATION = 1 << 12;
+
+    /**
+     * Flag indicating that an unhandled drag should be delegated to the system to be started if no
+     * visible window wishes to handle the drop. When using this flag, the caller must provide
+     * ClipData with an Item that contains an immutable IntentSender to an activity to be launched
+     * (not a broadcast, service, etc).  See
+     * {@link ClipData.Item.Builder#setIntentSender(IntentSender)}.
+     *
+     * The system can decide to launch the intent or not based on factors like the current screen
+     * size or windowing mode. If the system does not launch the intent, it will be canceled via the
+     * normal drag and drop flow.
+     */
+    @FlaggedApi(FLAG_DELEGATE_UNHANDLED_DRAGS)
+    public static final int DRAG_FLAG_START_INTENT_SENDER_ON_UNHANDLED_DRAG = 1 << 13;
+
+    /**
+     * Flag indicating that this drag will result in the caller activity's task to be hidden for the
+     * duration of the drag, which means that the source activity will not receive drag events for
+     * the current drag gesture. Only the current
+     * {@link android.service.voice.VoiceInteractionService} may use this flag.
+     */
+    @FlaggedApi(FLAG_SUPPORTS_DRAG_ASSISTANT_TO_MULTIWINDOW)
+    public static final int DRAG_FLAG_HIDE_CALLING_TASK_ON_DRAG_START = 1 << 14;
+
+    /**
+     * Vertical scroll factor cached by {@link #getVerticalScrollFactor}.
+     */
+    private float mVerticalScrollFactor;
+
+    /**
+     * Position of the vertical scroll bar.
+     */
+    @UnsupportedAppUsage
+    private int mVerticalScrollbarPosition;
+
+    /**
+     * Position the scroll bar at the default position as determined by the system.
+     */
+    public static final int SCROLLBAR_POSITION_DEFAULT = 0;
+
+    /**
+     * Position the scroll bar along the left edge.
+     */
+    public static final int SCROLLBAR_POSITION_LEFT = 1;
+
+    /**
+     * Position the scroll bar along the right edge.
+     */
+    public static final int SCROLLBAR_POSITION_RIGHT = 2;
+
+    /**
+     * Indicates that the view does not have a layer.
+     *
+     * @see #getLayerType()
+     * @see #setLayerType(int, android.graphics.Paint)
+     * @see #LAYER_TYPE_SOFTWARE
+     * @see #LAYER_TYPE_HARDWARE
+     */
+    public static final int LAYER_TYPE_NONE = 0;
+
+    /**
+     * <p>Indicates that the view has a software layer. A software layer is backed
+     * by a bitmap and causes the view to be rendered using Android's software
+     * rendering pipeline, even if hardware acceleration is enabled.</p>
+     *
+     * <p>Software layers have various usages:</p>
+     * <p>When the application is not using hardware acceleration, a software layer
+     * is useful to apply a specific color filter and/or blending mode and/or
+     * translucency to a view and all its children.</p>
+     * <p>When the application is using hardware acceleration, a software layer
+     * is useful to render drawing primitives not supported by the hardware
+     * accelerated pipeline. It can also be used to cache a complex view tree
+     * into a texture and reduce the complexity of drawing operations. For instance,
+     * when animating a complex view tree with a translation, a software layer can
+     * be used to render the view tree only once.</p>
+     * <p>Software layers should be avoided when the affected view tree updates
+     * often. Every update will require to re-render the software layer, which can
+     * potentially be slow (particularly when hardware acceleration is turned on
+     * since the layer will have to be uploaded into a hardware texture after every
+     * update.)</p>
+     *
+     * @see #getLayerType()
+     * @see #setLayerType(int, android.graphics.Paint)
+     * @see #LAYER_TYPE_NONE
+     * @see #LAYER_TYPE_HARDWARE
+     */
+    public static final int LAYER_TYPE_SOFTWARE = 1;
+
+    /**
+     * <p>Indicates that the view has a hardware layer. A hardware layer is backed
+     * by a hardware specific texture (generally Frame Buffer Objects or FBO on
+     * OpenGL hardware) and causes the view to be rendered using Android's hardware
+     * rendering pipeline, but only if hardware acceleration is turned on for the
+     * view hierarchy. When hardware acceleration is turned off, hardware layers
+     * behave exactly as {@link #LAYER_TYPE_SOFTWARE software layers}.</p>
+     *
+     * <p>A hardware layer is useful to apply a specific color filter and/or
+     * blending mode and/or translucency to a view and all its children.</p>
+     * <p>A hardware layer can be used to cache a complex view tree into a
+     * texture and reduce the complexity of drawing operations. For instance,
+     * when animating a complex view tree with a translation, a hardware layer can
+     * be used to render the view tree only once.</p>
+     * <p>A hardware layer can also be used to increase the rendering quality when
+     * rotation transformations are applied on a view. It can also be used to
+     * prevent potential clipping issues when applying 3D transforms on a view.</p>
+     *
+     * @see #getLayerType()
+     * @see #setLayerType(int, android.graphics.Paint)
+     * @see #LAYER_TYPE_NONE
+     * @see #LAYER_TYPE_SOFTWARE
+     */
+    public static final int LAYER_TYPE_HARDWARE = 2;
+
+    /** @hide */
+    @IntDef(prefix = { "LAYER_TYPE_" }, value = {
+            LAYER_TYPE_NONE,
+            LAYER_TYPE_SOFTWARE,
+            LAYER_TYPE_HARDWARE
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface LayerType {}
+
+    int mLayerType = LAYER_TYPE_NONE;
+    Paint mLayerPaint;
+
+    /**
+     * Set to true when drawing cache is enabled and cannot be created.
+     *
+     * @hide
+     */
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+    public boolean mCachingFailed;
+    @UnsupportedAppUsage
+    private Bitmap mDrawingCache;
+    @UnsupportedAppUsage
+    private Bitmap mUnscaledDrawingCache;
+
+    /**
+     * RenderNode holding View properties, potentially holding a DisplayList of View content.
+     * <p>
+     * When non-null and valid, this is expected to contain an up-to-date copy
+     * of the View content. Its DisplayList content is cleared on temporary detach and reset on
+     * cleanup.
+     */
+    @UnsupportedAppUsage
+    final RenderNode mRenderNode;
+
+    /**
+     * Set to true when the view is sending hover accessibility events because it
+     * is the innermost hovered view.
+     */
+    private boolean mSendingHoverAccessibilityEvents;
+
+    /**
+     * Delegate for injecting accessibility functionality.
+     */
+    @UnsupportedAppUsage
+    AccessibilityDelegate mAccessibilityDelegate;
+
+    /**
+     * The view's overlay layer. Developers get a reference to the overlay via getOverlay()
+     * and add/remove objects to/from the overlay directly through the Overlay methods.
+     */
+    ViewOverlay mOverlay;
+
+    /**
+     * The currently active parent view for receiving delegated nested scrolling events.
+     * This is set by {@link #startNestedScroll(int)} during a touch interaction and cleared
+     * by {@link #stopNestedScroll()} at the same point where we clear
+     * requestDisallowInterceptTouchEvent.
+     */
+    private ViewParent mNestedScrollingParent;
