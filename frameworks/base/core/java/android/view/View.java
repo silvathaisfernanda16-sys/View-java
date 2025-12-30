@@ -3260,3 +3260,1090 @@ private static final int POPULATING_ACCESSIBILITY_EVENT_TYPES =
      * @hide
      */
     static final int PFLAG2_TEXT_ALIGNMENT_RESOLVED = 0x00000008 << PFLAG2_TEXT_ALIGNMENT_MASK_SHIFT;
+
+    /**
+     * Bit shift to get the resolved text alignment.
+     * @hide
+     */
+    static final int PFLAG2_TEXT_ALIGNMENT_RESOLVED_MASK_SHIFT = 17;
+
+    /**
+     * Mask for use with private flags indicating bits used for text alignment.
+     * @hide
+     */
+    static final int PFLAG2_TEXT_ALIGNMENT_RESOLVED_MASK = 0x00000007
+            << PFLAG2_TEXT_ALIGNMENT_RESOLVED_MASK_SHIFT;
+
+    /**
+     * Indicates whether if the view text alignment has been resolved to gravity
+     */
+    private static final int PFLAG2_TEXT_ALIGNMENT_RESOLVED_DEFAULT =
+            TEXT_ALIGNMENT_RESOLVED_DEFAULT << PFLAG2_TEXT_ALIGNMENT_RESOLVED_MASK_SHIFT;
+
+    // Accessiblity constants for mPrivateFlags2
+
+    /**
+     * Shift for the bits in {@link #mPrivateFlags2} related to the
+     * "importantForAccessibility" attribute.
+     */
+    static final int PFLAG2_IMPORTANT_FOR_ACCESSIBILITY_SHIFT = 20;
+
+    /**
+     * Automatically determine whether a view is important for accessibility.
+     */
+    public static final int IMPORTANT_FOR_ACCESSIBILITY_AUTO = 0x00000000;
+
+    /**
+     * The view is important for accessibility.
+     */
+    public static final int IMPORTANT_FOR_ACCESSIBILITY_YES = 0x00000001;
+
+    /**
+     * The view is not important for accessibility.
+     */
+    public static final int IMPORTANT_FOR_ACCESSIBILITY_NO = 0x00000002;
+
+    /**
+     * The view is not important for accessibility, nor are any of its
+     * descendant views.
+     */
+    public static final int IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS = 0x00000004;
+
+    /**
+     * The default whether the view is important for accessibility.
+     */
+    static final int IMPORTANT_FOR_ACCESSIBILITY_DEFAULT = IMPORTANT_FOR_ACCESSIBILITY_AUTO;
+
+    /**
+     * Automatically determine whether the view should only allow interactions from
+     * {@link android.accessibilityservice.AccessibilityService}s with the
+     * {@link android.accessibilityservice.AccessibilityServiceInfo#isAccessibilityTool} property
+     * set to true.
+     *
+     * <p>
+     * Accessibility interactions from services without {@code isAccessibilityTool} set to true are
+     * disallowed for any of the following conditions:
+     * <li>this view sets {@link #getFilterTouchesWhenObscured()}.</li>
+     * <li>any parent of this view returns true from {@link #isAccessibilityDataSensitive()}.</li>
+     * </p>
+     */
+    public static final int ACCESSIBILITY_DATA_SENSITIVE_AUTO = 0x00000000;
+
+    /**
+     * Only allow interactions from {@link android.accessibilityservice.AccessibilityService}s
+     * with the {@link android.accessibilityservice.AccessibilityServiceInfo#isAccessibilityTool}
+     * property set to true.
+     */
+    public static final int ACCESSIBILITY_DATA_SENSITIVE_YES = 0x00000001;
+
+    /**
+     * Allow interactions from all {@link android.accessibilityservice.AccessibilityService}s,
+     * regardless of their
+     * {@link android.accessibilityservice.AccessibilityServiceInfo#isAccessibilityTool} property.
+     */
+    public static final int ACCESSIBILITY_DATA_SENSITIVE_NO = 0x00000002;
+
+    /** @hide */
+    @IntDef(prefix = { "ACCESSIBILITY_DATA_SENSITIVE_" }, value = {
+            ACCESSIBILITY_DATA_SENSITIVE_AUTO,
+            ACCESSIBILITY_DATA_SENSITIVE_YES,
+            ACCESSIBILITY_DATA_SENSITIVE_NO,
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AccessibilityDataSensitive {}
+
+    /**
+     * Mask for obtaining the bits which specify how to determine
+     * whether a view is important for accessibility.
+     */
+    static final int PFLAG2_IMPORTANT_FOR_ACCESSIBILITY_MASK = (IMPORTANT_FOR_ACCESSIBILITY_AUTO
+        | IMPORTANT_FOR_ACCESSIBILITY_YES | IMPORTANT_FOR_ACCESSIBILITY_NO
+        | IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS)
+        << PFLAG2_IMPORTANT_FOR_ACCESSIBILITY_SHIFT;
+
+    /**
+     * Shift for the bits in {@link #mPrivateFlags2} related to the
+     * "accessibilityLiveRegion" attribute.
+     */
+    static final int PFLAG2_ACCESSIBILITY_LIVE_REGION_SHIFT = 23;
+
+    /**
+     * Live region mode specifying that accessibility services should not
+     * automatically announce changes to this view. This is the default live
+     * region mode for most views.
+     * <p>
+     * Use with {@link #setAccessibilityLiveRegion(int)}.
+     */
+    public static final int ACCESSIBILITY_LIVE_REGION_NONE = 0x00000000;
+
+    /**
+     * Live region mode specifying that accessibility services should notify users of changes to
+     * this view.
+     * <p>
+     * Use with {@link #setAccessibilityLiveRegion(int)}.
+     */
+    public static final int ACCESSIBILITY_LIVE_REGION_POLITE = 0x00000001;
+
+    /**
+     * Live region mode specifying that accessibility services should immediately notify users of
+     * changes to this view. For example, a screen reader may interrupt ongoing speech to
+     * immediately announce these changes.
+     * <p>
+     * Use with {@link #setAccessibilityLiveRegion(int)}.
+     */
+    public static final int ACCESSIBILITY_LIVE_REGION_ASSERTIVE = 0x00000002;
+
+    /**
+     * The default whether the view is important for accessibility.
+     */
+    static final int ACCESSIBILITY_LIVE_REGION_DEFAULT = ACCESSIBILITY_LIVE_REGION_NONE;
+
+    /**
+     * Mask for obtaining the bits which specify a view's accessibility live
+     * region mode.
+     */
+    static final int PFLAG2_ACCESSIBILITY_LIVE_REGION_MASK = (ACCESSIBILITY_LIVE_REGION_NONE
+            | ACCESSIBILITY_LIVE_REGION_POLITE | ACCESSIBILITY_LIVE_REGION_ASSERTIVE)
+            << PFLAG2_ACCESSIBILITY_LIVE_REGION_SHIFT;
+
+    /**
+     * Flag indicating whether a view has accessibility focus.
+     */
+    static final int PFLAG2_ACCESSIBILITY_FOCUSED = 0x04000000;
+
+    /**
+     * Flag whether the accessibility state of the subtree rooted at this view changed.
+     */
+    static final int PFLAG2_SUBTREE_ACCESSIBILITY_STATE_CHANGED = 0x08000000;
+
+    /**
+     * Flag indicating whether a view failed the quickReject() check in draw(). This condition
+     * is used to check whether later changes to the view's transform should invalidate the
+     * view to force the quickReject test to run again.
+     */
+    static final int PFLAG2_VIEW_QUICK_REJECTED = 0x10000000;
+
+    /**
+     * Flag indicating that start/end padding has been resolved into left/right padding
+     * for use in measurement, layout, drawing, etc. This is set by {@link #resolvePadding()}
+     * and checked by {@link #measure(int, int)} to determine if padding needs to be resolved
+     * during measurement. In some special cases this is required such as when an adapter-based
+     * view measures prospective children without attaching them to a window.
+     */
+    static final int PFLAG2_PADDING_RESOLVED = 0x20000000;
+
+    /**
+     * Flag indicating that the start/end drawables has been resolved into left/right ones.
+     */
+    static final int PFLAG2_DRAWABLE_RESOLVED = 0x40000000;
+
+    /**
+     * Indicates that the view is tracking some sort of transient state
+     * that the app should not need to be aware of, but that the framework
+     * should take special care to preserve.
+     */
+    static final int PFLAG2_HAS_TRANSIENT_STATE = 0x80000000;
+
+    /**
+     * Group of bits indicating that RTL properties resolution is done.
+     */
+    static final int ALL_RTL_PROPERTIES_RESOLVED = PFLAG2_LAYOUT_DIRECTION_RESOLVED |
+            PFLAG2_TEXT_DIRECTION_RESOLVED |
+            PFLAG2_TEXT_ALIGNMENT_RESOLVED |
+            PFLAG2_PADDING_RESOLVED |
+            PFLAG2_DRAWABLE_RESOLVED;
+
+    // There are a couple of flags left in mPrivateFlags2
+
+    /* End of masks for mPrivateFlags2 */
+
+    /*
+     * Masks for mPrivateFlags3, as generated by dumpFlags():
+     *
+     * |-------|-------|-------|-------|
+     *                                 1 PFLAG3_VIEW_IS_ANIMATING_TRANSFORM
+     *                                1  PFLAG3_VIEW_IS_ANIMATING_ALPHA
+     *                               1   PFLAG3_IS_LAID_OUT
+     *                              1    PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT
+     *                             1     PFLAG3_CALLED_SUPER
+     *                            1      PFLAG3_APPLYING_INSETS
+     *                           1       PFLAG3_FITTING_SYSTEM_WINDOWS
+     *                          1        PFLAG3_NESTED_SCROLLING_ENABLED
+     *                         1         PFLAG3_SCROLL_INDICATOR_TOP
+     *                        1          PFLAG3_SCROLL_INDICATOR_BOTTOM
+     *                       1           PFLAG3_SCROLL_INDICATOR_LEFT
+     *                      1            PFLAG3_SCROLL_INDICATOR_RIGHT
+     *                     1             PFLAG3_SCROLL_INDICATOR_START
+     *                    1              PFLAG3_SCROLL_INDICATOR_END
+     *                   1               PFLAG3_ASSIST_BLOCKED
+     *                  1                PFLAG3_CLUSTER
+     *                 1                 PFLAG3_IS_AUTOFILLED
+     *                1                  PFLAG3_FINGER_DOWN
+     *               1                   PFLAG3_FOCUSED_BY_DEFAULT
+     *           1111                    PFLAG3_IMPORTANT_FOR_AUTOFILL
+     *          1                        PFLAG3_OVERLAPPING_RENDERING_FORCED_VALUE
+     *         1                         PFLAG3_HAS_OVERLAPPING_RENDERING_FORCED
+     *        1                          PFLAG3_TEMPORARY_DETACH
+     *       1                           PFLAG3_NO_REVEAL_ON_FOCUS
+     *      1                            PFLAG3_NOTIFY_AUTOFILL_ENTER_ON_LAYOUT
+     *     1                             PFLAG3_SCREEN_READER_FOCUSABLE
+     *    1                              PFLAG3_AGGREGATED_VISIBLE
+     *   1                               PFLAG3_AUTOFILLID_EXPLICITLY_SET
+     *  1                                PFLAG3_ACCESSIBILITY_HEADING
+     * |-------|-------|-------|-------|
+     */
+
+    /**
+     * Flag indicating that view has a transform animation set on it. This is used to track whether
+     * an animation is cleared between successive frames, in order to tell the associated
+     * DisplayList to clear its animation matrix.
+     */
+    static final int PFLAG3_VIEW_IS_ANIMATING_TRANSFORM = 0x1;
+
+    /**
+     * Flag indicating that view has an alpha animation set on it. This is used to track whether an
+     * animation is cleared between successive frames, in order to tell the associated
+     * DisplayList to restore its alpha value.
+     */
+    static final int PFLAG3_VIEW_IS_ANIMATING_ALPHA = 0x2;
+
+    /**
+     * Flag indicating that the view has been through at least one layout since it
+     * was last attached to a window.
+     */
+    static final int PFLAG3_IS_LAID_OUT = 0x4;
+
+    /**
+     * Flag indicating that a call to measure() was skipped and should be done
+     * instead when layout() is invoked.
+     */
+    static final int PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT = 0x8;
+
+    /**
+     * Flag indicating that an overridden method correctly called down to
+     * the superclass implementation as required by the API spec.
+     */
+    static final int PFLAG3_CALLED_SUPER = 0x10;
+
+    /**
+     * Flag indicating that we're in the process of applying window insets.
+     */
+    static final int PFLAG3_APPLYING_INSETS = 0x20;
+
+    /**
+     * Flag indicating that we're in the process of fitting system windows using the old method.
+     */
+    static final int PFLAG3_FITTING_SYSTEM_WINDOWS = 0x40;
+
+    /**
+     * Flag indicating that nested scrolling is enabled for this view.
+     * The view will optionally cooperate with views up its parent chain to allow for
+     * integrated nested scrolling along the same axis.
+     */
+    static final int PFLAG3_NESTED_SCROLLING_ENABLED = 0x80;
+
+    /**
+     * Flag indicating that the bottom scroll indicator should be displayed
+     * when this view can scroll up.
+     */
+    static final int PFLAG3_SCROLL_INDICATOR_TOP = 0x0100;
+
+    /**
+     * Flag indicating that the bottom scroll indicator should be displayed
+     * when this view can scroll down.
+     */
+    static final int PFLAG3_SCROLL_INDICATOR_BOTTOM = 0x0200;
+
+    /**
+     * Flag indicating that the left scroll indicator should be displayed
+     * when this view can scroll left.
+     */
+    static final int PFLAG3_SCROLL_INDICATOR_LEFT = 0x0400;
+
+    /**
+     * Flag indicating that the right scroll indicator should be displayed
+     * when this view can scroll right.
+     */
+    static final int PFLAG3_SCROLL_INDICATOR_RIGHT = 0x0800;
+
+    /**
+     * Flag indicating that the start scroll indicator should be displayed
+     * when this view can scroll in the start direction.
+     */
+    static final int PFLAG3_SCROLL_INDICATOR_START = 0x1000;
+
+    /**
+     * Flag indicating that the end scroll indicator should be displayed
+     * when this view can scroll in the end direction.
+     */
+    static final int PFLAG3_SCROLL_INDICATOR_END = 0x2000;
+
+    static final int DRAG_MASK = PFLAG2_DRAG_CAN_ACCEPT | PFLAG2_DRAG_HOVERED;
+
+    static final int SCROLL_INDICATORS_NONE = 0x0000;
+
+    /**
+     * Mask for use with setFlags indicating bits used for indicating which
+     * scroll indicators are enabled.
+     */
+    static final int SCROLL_INDICATORS_PFLAG3_MASK = PFLAG3_SCROLL_INDICATOR_TOP
+            | PFLAG3_SCROLL_INDICATOR_BOTTOM | PFLAG3_SCROLL_INDICATOR_LEFT
+            | PFLAG3_SCROLL_INDICATOR_RIGHT | PFLAG3_SCROLL_INDICATOR_START
+            | PFLAG3_SCROLL_INDICATOR_END;
+
+    /**
+     * Left-shift required to translate between public scroll indicator flags
+     * and internal PFLAGS3 flags. When used as a right-shift, translates
+     * PFLAGS3 flags to public flags.
+     */
+    static final int SCROLL_INDICATORS_TO_PFLAGS3_LSHIFT = 8;
+
+    /** @hide */
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef(flag = true, prefix = { "SCROLL_INDICATOR_" }, value = {
+            SCROLL_INDICATOR_TOP,
+            SCROLL_INDICATOR_BOTTOM,
+            SCROLL_INDICATOR_LEFT,
+            SCROLL_INDICATOR_RIGHT,
+            SCROLL_INDICATOR_START,
+            SCROLL_INDICATOR_END,
+    })
+    public @interface ScrollIndicators {}
+
+    /**
+     * Scroll indicator direction for the top edge of the view.
+     *
+     * @see #setScrollIndicators(int)
+     * @see #setScrollIndicators(int, int)
+     * @see #getScrollIndicators()
+     */
+    public static final int SCROLL_INDICATOR_TOP =
+            PFLAG3_SCROLL_INDICATOR_TOP >> SCROLL_INDICATORS_TO_PFLAGS3_LSHIFT;
+
+    /**
+     * Scroll indicator direction for the bottom edge of the view.
+     *
+     * @see #setScrollIndicators(int)
+     * @see #setScrollIndicators(int, int)
+     * @see #getScrollIndicators()
+     */
+    public static final int SCROLL_INDICATOR_BOTTOM =
+            PFLAG3_SCROLL_INDICATOR_BOTTOM >> SCROLL_INDICATORS_TO_PFLAGS3_LSHIFT;
+
+    /**
+     * Scroll indicator direction for the left edge of the view.
+     *
+     * @see #setScrollIndicators(int)
+     * @see #setScrollIndicators(int, int)
+     * @see #getScrollIndicators()
+     */
+    public static final int SCROLL_INDICATOR_LEFT =
+            PFLAG3_SCROLL_INDICATOR_LEFT >> SCROLL_INDICATORS_TO_PFLAGS3_LSHIFT;
+
+    /**
+     * Scroll indicator direction for the right edge of the view.
+     *
+     * @see #setScrollIndicators(int)
+     * @see #setScrollIndicators(int, int)
+     * @see #getScrollIndicators()
+     */
+    public static final int SCROLL_INDICATOR_RIGHT =
+            PFLAG3_SCROLL_INDICATOR_RIGHT >> SCROLL_INDICATORS_TO_PFLAGS3_LSHIFT;
+
+    /**
+     * Scroll indicator direction for the starting edge of the view.
+     * <p>
+     * Resolved according to the view's layout direction, see
+     * {@link #getLayoutDirection()} for more information.
+     *
+     * @see #setScrollIndicators(int)
+     * @see #setScrollIndicators(int, int)
+     * @see #getScrollIndicators()
+     */
+    public static final int SCROLL_INDICATOR_START =
+            PFLAG3_SCROLL_INDICATOR_START >> SCROLL_INDICATORS_TO_PFLAGS3_LSHIFT;
+
+    /**
+     * Scroll indicator direction for the ending edge of the view.
+     * <p>
+     * Resolved according to the view's layout direction, see
+     * {@link #getLayoutDirection()} for more information.
+     *
+     * @see #setScrollIndicators(int)
+     * @see #setScrollIndicators(int, int)
+     * @see #getScrollIndicators()
+     */
+    public static final int SCROLL_INDICATOR_END =
+            PFLAG3_SCROLL_INDICATOR_END >> SCROLL_INDICATORS_TO_PFLAGS3_LSHIFT;
+
+    /**
+     * <p>Indicates that we are allowing {@link ViewStructure} to traverse
+     * into this view.<p>
+     */
+    static final int PFLAG3_ASSIST_BLOCKED = 0x4000;
+
+    /**
+     * Flag indicating that the view is a root of a keyboard navigation cluster.
+     *
+     * @see #isKeyboardNavigationCluster()
+     * @see #setKeyboardNavigationCluster(boolean)
+     */
+    private static final int PFLAG3_CLUSTER = 0x8000;
+
+    /**
+     * Flag indicating that the view is autofilled
+     *
+     * @see #isAutofilled()
+     * @see #setAutofilled(boolean, boolean)
+     */
+    private static final int PFLAG3_IS_AUTOFILLED = 0x10000;
+
+    /**
+     * Indicates that the user is currently touching the screen.
+     * Currently used for the tooltip positioning only.
+     */
+    private static final int PFLAG3_FINGER_DOWN = 0x20000;
+
+    /**
+     * Flag indicating that this view is the default-focus view.
+     *
+     * @see #isFocusedByDefault()
+     * @see #setFocusedByDefault(boolean)
+     */
+    private static final int PFLAG3_FOCUSED_BY_DEFAULT = 0x40000;
+
+    /**
+     * Shift for the bits in {@link #mPrivateFlags3} related to the
+     * "importantForAutofill" attribute.
+     */
+    static final int PFLAG3_IMPORTANT_FOR_AUTOFILL_SHIFT = 19;
+
+    /**
+     * Mask for obtaining the bits which specify how to determine
+     * whether a view is important for autofill.
+     */
+    static final int PFLAG3_IMPORTANT_FOR_AUTOFILL_MASK = (IMPORTANT_FOR_AUTOFILL_AUTO
+            | IMPORTANT_FOR_AUTOFILL_YES | IMPORTANT_FOR_AUTOFILL_NO
+            | IMPORTANT_FOR_AUTOFILL_YES_EXCLUDE_DESCENDANTS
+            | IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS)
+            << PFLAG3_IMPORTANT_FOR_AUTOFILL_SHIFT;
+
+    /**
+     * Whether this view has rendered elements that overlap (see {@link
+     * #hasOverlappingRendering()}, {@link #forceHasOverlappingRendering(boolean)}, and
+     * {@link #getHasOverlappingRendering()} ). The value in this bit is only valid when
+     * PFLAG3_HAS_OVERLAPPING_RENDERING_FORCED has been set. Otherwise, the value is
+     * determined by whatever {@link #hasOverlappingRendering()} returns.
+     */
+    private static final int PFLAG3_OVERLAPPING_RENDERING_FORCED_VALUE = 0x800000;
+
+    /**
+     * Whether {@link #forceHasOverlappingRendering(boolean)} has been called. When true, value
+     * in PFLAG3_OVERLAPPING_RENDERING_FORCED_VALUE is valid.
+     */
+    private static final int PFLAG3_HAS_OVERLAPPING_RENDERING_FORCED = 0x1000000;
+
+    /**
+     * Flag indicating that the view is temporarily detached from the parent view.
+     *
+     * @see #onStartTemporaryDetach()
+     * @see #onFinishTemporaryDetach()
+     */
+    static final int PFLAG3_TEMPORARY_DETACH = 0x2000000;
+
+    /**
+     * Flag indicating that the view does not wish to be revealed within its parent
+     * hierarchy when it gains focus. Expressed in the negative since the historical
+     * default behavior is to reveal on focus; this flag suppresses that behavior.
+     *
+     * @see #setRevealOnFocusHint(boolean)
+     * @see #getRevealOnFocusHint()
+     */
+    private static final int PFLAG3_NO_REVEAL_ON_FOCUS = 0x4000000;
+
+    /**
+     * Flag indicating that when layout is completed we should notify
+     * that the view was entered for autofill purposes. To minimize
+     * showing autofill for views not visible to the user we evaluate
+     * user visibility which cannot be done until the view is laid out.
+     */
+    static final int PFLAG3_NOTIFY_AUTOFILL_ENTER_ON_LAYOUT = 0x8000000;
+
+    /**
+     * Works like focusable for screen readers, but without the side effects on input focus.
+     * @see #setScreenReaderFocusable(boolean)
+     */
+    private static final int PFLAG3_SCREEN_READER_FOCUSABLE = 0x10000000;
+
+    /**
+     * The last aggregated visibility. Used to detect when it truly changes.
+     */
+    private static final int PFLAG3_AGGREGATED_VISIBLE = 0x20000000;
+
+    /**
+     * Used to indicate that {@link #mAutofillId} was explicitly set through
+     * {@link #setAutofillId(AutofillId)}.
+     */
+    private static final int PFLAG3_AUTOFILLID_EXPLICITLY_SET = 0x40000000;
+
+    /**
+     * Indicates if the View is a heading for accessibility purposes
+     */
+    private static final int PFLAG3_ACCESSIBILITY_HEADING = 0x80000000;
+
+    /* End of masks for mPrivateFlags3 */
+
+    /*
+     * Masks for mPrivateFlags4, as generated by dumpFlags():
+     *
+     * |-------|-------|-------|-------|
+     *                             1111 PFLAG4_IMPORTANT_FOR_CONTENT_CAPTURE_MASK
+     *                            1     PFLAG4_NOTIFIED_CONTENT_CAPTURE_APPEARED
+     *                           1      PFLAG4_NOTIFIED_CONTENT_CAPTURE_DISAPPEARED
+     *                          1       PFLAG4_CONTENT_CAPTURE_IMPORTANCE_IS_CACHED
+     *                         1        PFLAG4_CONTENT_CAPTURE_IMPORTANCE_CACHED_VALUE
+     *                         11       PFLAG4_CONTENT_CAPTURE_IMPORTANCE_MASK
+     *                        1         PFLAG4_FRAMEWORK_OPTIONAL_FITS_SYSTEM_WINDOWS
+     *                       1          PFLAG4_AUTOFILL_HIDE_HIGHLIGHT
+     *                     11           PFLAG4_SCROLL_CAPTURE_HINT_MASK
+     *                    1             PFLAG4_ALLOW_CLICK_WHEN_DISABLED
+     *                   1              PFLAG4_DETACHED
+     *                  1               PFLAG4_HAS_TRANSLATION_TRANSIENT_STATE
+     *                 1                PFLAG4_DRAG_A11Y_STARTED
+     *                1                 PFLAG4_AUTO_HANDWRITING_INITIATION_ENABLED
+     *               1                  PFLAG4_IMPORTANT_FOR_CREDENTIAL_MANAGER
+     *              1                   PFLAG4_TRAVERSAL_TRACING_ENABLED
+     *             1                    PFLAG4_RELAYOUT_TRACING_ENABLED
+     *            1                     PFLAG4_ROTARY_HAPTICS_DETERMINED
+     *           1                      PFLAG4_ROTARY_HAPTICS_ENABLED
+     *          1                       PFLAG4_ROTARY_HAPTICS_SCROLL_SINCE_LAST_ROTARY_INPUT
+     *         1                        PFLAG4_ROTARY_HAPTICS_WAITING_FOR_SCROLL_EVENT
+     *       11                         PFLAG4_CONTENT_SENSITIVITY_MASK
+     *      1                           PFLAG4_IS_COUNTED_AS_SENSITIVE
+     *     1                            PFLAG4_HAS_DRAWN
+     *    1                             PFLAG4_HAS_MOVED
+     *   1                              PFLAG4_HAS_VIEW_PROPERTY_INVALIDATION
+     *  1                               PFLAG4_FORCED_OVERRIDE_FRAME_RATE
+     * 1                                PFLAG4_SELF_REQUESTED_FRAME_RATE
+     * |-------|-------|-------|-------|
+     */
+
+    /**
+     * Mask for obtaining the bits which specify how to determine
+     * whether a view is important for autofill.
+     *
+     * <p>NOTE: the important for content capture values were the first flags added and are set in
+     * the rightmost position, so we don't need to shift them
+     */
+    private static final int PFLAG4_IMPORTANT_FOR_CONTENT_CAPTURE_MASK =
+            IMPORTANT_FOR_CONTENT_CAPTURE_AUTO | IMPORTANT_FOR_CONTENT_CAPTURE_YES
+            | IMPORTANT_FOR_CONTENT_CAPTURE_NO
+            | IMPORTANT_FOR_CONTENT_CAPTURE_YES_EXCLUDE_DESCENDANTS
+            | IMPORTANT_FOR_CONTENT_CAPTURE_NO_EXCLUDE_DESCENDANTS;
+
+    /*
+     * Variables used to control when the IntelligenceManager.notifyNodeAdded()/removed() methods
+     * should be called.
+     *
+     * The idea is to call notifyAppeared() after the view is layout and visible, then call
+     * notifyDisappeared() when it's gone (without known when it was removed from the parent).
+     */
+    private static final int PFLAG4_NOTIFIED_CONTENT_CAPTURE_APPEARED = 0x10;
+    private static final int PFLAG4_NOTIFIED_CONTENT_CAPTURE_DISAPPEARED = 0x20;
+
+    /*
+     * Flags used to cache the value returned by isImportantForContentCapture while the view
+     * hierarchy is being traversed.
+     */
+    private static final int PFLAG4_CONTENT_CAPTURE_IMPORTANCE_IS_CACHED = 0x40;
+    private static final int PFLAG4_CONTENT_CAPTURE_IMPORTANCE_CACHED_VALUE = 0x80;
+
+    private static final int PFLAG4_CONTENT_CAPTURE_IMPORTANCE_MASK =
+            PFLAG4_CONTENT_CAPTURE_IMPORTANCE_IS_CACHED
+            | PFLAG4_CONTENT_CAPTURE_IMPORTANCE_CACHED_VALUE;
+
+    /**
+     * @see #OPTIONAL_FITS_SYSTEM_WINDOWS
+     */
+    static final int PFLAG4_FRAMEWORK_OPTIONAL_FITS_SYSTEM_WINDOWS = 0x000000100;
+
+    /**
+     * Flag indicating the field should not have yellow highlight when autofilled.
+     */
+    private static final int PFLAG4_AUTOFILL_HIDE_HIGHLIGHT = 0x200;
+
+    /**
+     * Shift for the bits in {@link #mPrivateFlags4} related to scroll capture.
+     */
+    static final int PFLAG4_SCROLL_CAPTURE_HINT_SHIFT = 10;
+
+    static final int PFLAG4_SCROLL_CAPTURE_HINT_MASK = (SCROLL_CAPTURE_HINT_INCLUDE
+            | SCROLL_CAPTURE_HINT_EXCLUDE | SCROLL_CAPTURE_HINT_EXCLUDE_DESCENDANTS)
+            << PFLAG4_SCROLL_CAPTURE_HINT_SHIFT;
+
+    /**
+     * Indicates if the view can receive click events when disabled.
+     */
+    private static final int PFLAG4_ALLOW_CLICK_WHEN_DISABLED = 0x000001000;
+
+    /**
+     * Indicates if the view is just detached.
+     */
+    private static final int PFLAG4_DETACHED = 0x000002000;
+
+    /**
+     * Indicates that the view has transient state because the system is translating it.
+     */
+    private static final int PFLAG4_HAS_TRANSLATION_TRANSIENT_STATE = 0x000004000;
+
+    /**
+     * Indicates that the view has started a drag with {@link AccessibilityAction#ACTION_DRAG_START}
+     */
+    private static final int PFLAG4_DRAG_A11Y_STARTED = 0x000008000;
+
+    /**
+     * Indicates that the view enables auto handwriting initiation.
+     */
+    private static final int PFLAG4_AUTO_HANDWRITING_ENABLED = 0x000010000;
+
+    /**
+     * Indicates that the view is important for Credential Manager.
+     */
+    private static final int PFLAG4_IMPORTANT_FOR_CREDENTIAL_MANAGER = 0x000020000;
+
+    /**
+     * When set, measure and layout passes of this view will be logged with {@link Trace}, so we
+     * can better debug jank due to complex view hierarchies.
+     */
+    private static final int PFLAG4_TRAVERSAL_TRACING_ENABLED = 0x000040000;
+
+    /**
+     * When set, emits a {@link Trace} instant event and stacktrace every time a requestLayout of
+     * this class happens.
+     */
+    private static final int PFLAG4_RELAYOUT_TRACING_ENABLED = 0x000080000;
+
+    /** Indicates if rotary scroll haptics support for the view has been determined. */
+    private static final int PFLAG4_ROTARY_HAPTICS_DETERMINED = 0x100000;
+
+    /**
+     * Indicates if rotary scroll haptics is enabled for this view.
+     * The source of truth for this info is a ViewConfiguration API; this bit only caches the value.
+     */
+    private static final int PFLAG4_ROTARY_HAPTICS_ENABLED = 0x200000;
+
+    /** Indicates if there has been a scroll event since the last rotary input. */
+    private static final int PFLAG4_ROTARY_HAPTICS_SCROLL_SINCE_LAST_ROTARY_INPUT = 0x400000;
+
+    /**
+     * Indicates if there has been a rotary input that may generate a scroll event.
+     * This flag is important so that a scroll event can be properly attributed to a rotary input.
+     */
+    private static final int PFLAG4_ROTARY_HAPTICS_WAITING_FOR_SCROLL_EVENT = 0x800000;
+
+    private static final int PFLAG4_CONTENT_SENSITIVITY_SHIFT = 24;
+
+    /**
+     * Mask for obtaining the bits which specify how to determine whether a view
+     * displays sensitive content or not.
+     */
+    private static final int PFLAG4_CONTENT_SENSITIVITY_MASK =
+            (CONTENT_SENSITIVITY_AUTO | CONTENT_SENSITIVITY_SENSITIVE
+                    | CONTENT_SENSITIVITY_NOT_SENSITIVE) << PFLAG4_CONTENT_SENSITIVITY_SHIFT;
+
+    /**
+     * Whether this view has been counted as a sensitive view or not.
+     *
+     * @see AttachInfo#mSensitiveViewsCount
+     */
+    private static final int PFLAG4_IS_COUNTED_AS_SENSITIVE = 0x4000000;
+
+    /**
+     * Whether this view has been drawn once with updateDisplayListIfDirty() or not.
+     * Used by VRR to for quick detection of scrolling.
+     */
+    private static final int PFLAG4_HAS_DRAWN = 0x8000000;
+
+    /**
+     * Whether this view has been moved with either setTranslationX/Y or setLeft/Top.
+     * Used by VRR to for quick detection of scrolling.
+     */
+    private static final int PFLAG4_HAS_MOVED = 0x10000000;
+
+    /**
+     * Whether the invalidateViewProperty is involked at current frame.
+     */
+    private static final int PFLAG4_HAS_VIEW_PROPERTY_INVALIDATION = 0x20000000;
+
+    /**
+     * When set, this indicates whether the frame rate of the children should be
+     * forcibly overridden, even if it has been explicitly configured by a user request.
+     */
+    private static final int PFLAG4_FORCED_OVERRIDE_FRAME_RATE = 0x40000000;
+
+    /**
+     * When set, this indicates that the frame rate is configured based on a user request.
+     */
+    private static final int PFLAG4_SELF_REQUESTED_FRAME_RATE = 0x80000000;
+
+    /* End of masks for mPrivateFlags4 */
+
+    /** @hide */
+    protected static final int VIEW_STRUCTURE_FOR_ASSIST = 0;
+    /** @hide */
+    protected  static final int VIEW_STRUCTURE_FOR_AUTOFILL = 1;
+    /** @hide */
+    protected  static final int VIEW_STRUCTURE_FOR_CONTENT_CAPTURE = 2;
+
+    /** @hide */
+    @IntDef(flag = true, prefix = { "VIEW_STRUCTURE_FOR" }, value = {
+            VIEW_STRUCTURE_FOR_ASSIST,
+            VIEW_STRUCTURE_FOR_AUTOFILL,
+            VIEW_STRUCTURE_FOR_CONTENT_CAPTURE
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ViewStructureType {}
+
+    /**
+     * Always allow a user to over-scroll this view, provided it is a
+     * view that can scroll.
+     *
+     * @see #getOverScrollMode()
+     * @see #setOverScrollMode(int)
+     */
+    public static final int OVER_SCROLL_ALWAYS = 0;
+
+    /**
+     * Allow a user to over-scroll this view only if the content is large
+     * enough to meaningfully scroll, provided it is a view that can scroll.
+     *
+     * @see #getOverScrollMode()
+     * @see #setOverScrollMode(int)
+     */
+    public static final int OVER_SCROLL_IF_CONTENT_SCROLLS = 1;
+
+    /**
+     * Never allow a user to over-scroll this view.
+     *
+     * @see #getOverScrollMode()
+     * @see #setOverScrollMode(int)
+     */
+    public static final int OVER_SCROLL_NEVER = 2;
+
+    /**
+     * Special constant for {@link #setSystemUiVisibility(int)}: View has
+     * requested the system UI (status bar) to be visible (the default).
+     *
+     * @see #setSystemUiVisibility(int)
+     * @deprecated SystemUiVisibility flags are deprecated. Use {@link WindowInsetsController}
+     * instead.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_FLAG_VISIBLE = 0;
+
+    /**
+     * Flag for {@link #setSystemUiVisibility(int)}: View has requested the
+     * system UI to enter an unobtrusive "low profile" mode.
+     *
+     * <p>This is for use in games, book readers, video players, or any other
+     * "immersive" application where the usual system chrome is deemed too distracting.
+     *
+     * <p>In low profile mode, the status bar and/or navigation icons may dim.
+     *
+     * @see #setSystemUiVisibility(int)
+     * @deprecated Low profile mode is deprecated. Hide the system bars instead if the application
+     * needs to be in a unobtrusive mode. Use {@link WindowInsetsController#hide(int)} with
+     * {@link Type#systemBars()}.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_FLAG_LOW_PROFILE = 0x00000001;
+
+    /**
+     * Flag for {@link #setSystemUiVisibility(int)}: View has requested that the
+     * system navigation be temporarily hidden.
+     *
+     * <p>This is an even less obtrusive state than that called for by
+     * {@link #SYSTEM_UI_FLAG_LOW_PROFILE}; on devices that draw essential navigation controls
+     * (Home, Back, and the like) on screen, <code>SYSTEM_UI_FLAG_HIDE_NAVIGATION</code> will cause
+     * those to disappear. This is useful (in conjunction with the
+     * {@link android.view.WindowManager.LayoutParams#FLAG_FULLSCREEN FLAG_FULLSCREEN} and
+     * {@link android.view.WindowManager.LayoutParams#FLAG_LAYOUT_IN_SCREEN FLAG_LAYOUT_IN_SCREEN}
+     * window flags) for displaying content using every last pixel on the display.
+     *
+     * <p>There is a limitation: because navigation controls are so important, the least user
+     * interaction will cause them to reappear immediately.  When this happens, both
+     * this flag and {@link #SYSTEM_UI_FLAG_FULLSCREEN} will be cleared automatically,
+     * so that both elements reappear at the same time.
+     *
+     * @see #setSystemUiVisibility(int)
+     * @deprecated Use {@link WindowInsetsController#hide(int)} with {@link Type#navigationBars()}
+     * instead.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_FLAG_HIDE_NAVIGATION = 0x00000002;
+
+    /**
+     * Flag for {@link #setSystemUiVisibility(int)}: View has requested to go
+     * into the normal fullscreen mode so that its content can take over the screen
+     * while still allowing the user to interact with the application.
+     *
+     * <p>This has the same visual effect as
+     * {@link android.view.WindowManager.LayoutParams#FLAG_FULLSCREEN
+     * WindowManager.LayoutParams.FLAG_FULLSCREEN},
+     * meaning that non-critical screen decorations (such as the status bar) will be
+     * hidden while the user is in the View's window, focusing the experience on
+     * that content.  Unlike the window flag, if you are using ActionBar in
+     * overlay mode with {@link Window#FEATURE_ACTION_BAR_OVERLAY
+     * Window.FEATURE_ACTION_BAR_OVERLAY}, then enabling this flag will also
+     * hide the action bar.
+     *
+     * <p>This approach to going fullscreen is best used over the window flag when
+     * it is a transient state -- that is, the application does this at certain
+     * points in its user interaction where it wants to allow the user to focus
+     * on content, but not as a continuous state.  For situations where the application
+     * would like to simply stay full screen the entire time (such as a game that
+     * wants to take over the screen), the
+     * {@link android.view.WindowManager.LayoutParams#FLAG_FULLSCREEN window flag}
+     * is usually a better approach.  The state set here will be removed by the system
+     * in various situations (such as the user moving to another application) like
+     * the other system UI states.
+     *
+     * <p>When using this flag, the application should provide some easy facility
+     * for the user to go out of it.  A common example would be in an e-book
+     * reader, where tapping on the screen brings back whatever screen and UI
+     * decorations that had been hidden while the user was immersed in reading
+     * the book.
+     *
+     * @see #setSystemUiVisibility(int)
+     * @deprecated Use {@link WindowInsetsController#hide(int)} with {@link Type#statusBars()}
+     * instead.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_FLAG_FULLSCREEN = 0x00000004;
+
+    /**
+     * Flag for {@link #setSystemUiVisibility(int)}: When using other layout
+     * flags, we would like a stable view of the content insets given to
+     * {@link #fitSystemWindows(Rect)}.  This means that the insets seen there
+     * will always represent the worst case that the application can expect
+     * as a continuous state.  In the stock Android UI this is the space for
+     * the system bar, nav bar, and status bar, but not more transient elements
+     * such as an input method.
+     *
+     * The stable layout your UI sees is based on the system UI modes you can
+     * switch to.  That is, if you specify {@link #SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN}
+     * then you will get a stable layout for changes of the
+     * {@link #SYSTEM_UI_FLAG_FULLSCREEN} mode; if you specify
+     * {@link #SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN} and
+     * {@link #SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION}, then you can transition
+     * to {@link #SYSTEM_UI_FLAG_FULLSCREEN} and {@link #SYSTEM_UI_FLAG_HIDE_NAVIGATION}
+     * with a stable layout.  (Note that you should avoid using
+     * {@link #SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION} by itself.)
+     *
+     * If you have set the window flag {@link WindowManager.LayoutParams#FLAG_FULLSCREEN}
+     * to hide the status bar (instead of using {@link #SYSTEM_UI_FLAG_FULLSCREEN}),
+     * then a hidden status bar will be considered a "stable" state for purposes
+     * here.  This allows your UI to continually hide the status bar, while still
+     * using the system UI flags to hide the action bar while still retaining
+     * a stable layout.  Note that changing the window fullscreen flag will never
+     * provide a stable layout for a clean transition.
+     *
+     * <p>If you are using ActionBar in
+     * overlay mode with {@link Window#FEATURE_ACTION_BAR_OVERLAY
+     * Window.FEATURE_ACTION_BAR_OVERLAY}, this flag will also impact the
+     * insets it adds to those given to the application.
+     *
+     * @deprecated Use {@link WindowInsets#getInsetsIgnoringVisibility(int)} instead to retrieve
+     * insets that don't change when system bars change visibility state.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_FLAG_LAYOUT_STABLE = 0x00000100;
+ /**
+     * Flag for {@link #setSystemUiVisibility(int)}: View would like its window
+     * to be laid out as if it has requested
+     * {@link #SYSTEM_UI_FLAG_HIDE_NAVIGATION}, even if it currently hasn't.  This
+     * allows it to avoid artifacts when switching in and out of that mode, at
+     * the expense that some of its user interface may be covered by screen
+     * decorations when they are shown.  You can perform layout of your inner
+     * UI elements to account for the navigation system UI through the
+     * {@link #fitSystemWindows(Rect)} method.
+     *
+     * @deprecated For floating windows, use {@link LayoutParams#setFitInsetsTypes(int)} with
+     * {@link Type#navigationBars()}. For non-floating windows that fill the screen, call
+     * {@link Window#setDecorFitsSystemWindows(boolean)} with {@code false}.
+     */
+    public static final int SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION = 0x00000200;
+
+    /**
+     * Flag for {@link #setSystemUiVisibility(int)}: View would like its window
+     * to be laid out as if it has requested
+     * {@link #SYSTEM_UI_FLAG_FULLSCREEN}, even if it currently hasn't.  This
+     * allows it to avoid artifacts when switching in and out of that mode, at
+     * the expense that some of its user interface may be covered by screen
+     * decorations when they are shown.  You can perform layout of your inner
+     * UI elements to account for non-fullscreen system UI through the
+     * {@link #fitSystemWindows(Rect)} method.
+     *
+     * <p>Note: on displays that have a {@link DisplayCutout}, the window may still be placed
+     *  differently than if {@link #SYSTEM_UI_FLAG_FULLSCREEN} was set, if the
+     *  window's {@link WindowManager.LayoutParams#layoutInDisplayCutoutMode
+     *  layoutInDisplayCutoutMode} is
+     *  {@link WindowManager.LayoutParams#LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT
+     *  LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT}. To avoid this, use either of the other modes.
+     *
+     * @see WindowManager.LayoutParams#layoutInDisplayCutoutMode
+     * @see WindowManager.LayoutParams#LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT
+     * @see WindowManager.LayoutParams#LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+     * @see WindowManager.LayoutParams#LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER
+     *
+     * @deprecated For floating windows, use {@link LayoutParams#setFitInsetsTypes(int)} with
+     * {@link Type#statusBars()} ()}. For non-floating windows that fill the screen, call
+     * {@link Window#setDecorFitsSystemWindows(boolean)} with {@code false}.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN = 0x00000400;
+
+    /**
+     * Flag for {@link #setSystemUiVisibility(int)}: View would like to remain interactive when
+     * hiding the navigation bar with {@link #SYSTEM_UI_FLAG_HIDE_NAVIGATION}.  If this flag is
+     * not set, {@link #SYSTEM_UI_FLAG_HIDE_NAVIGATION} will be force cleared by the system on any
+     * user interaction.
+     * <p>Since this flag is a modifier for {@link #SYSTEM_UI_FLAG_HIDE_NAVIGATION}, it only
+     * has an effect when used in combination with that flag.</p>
+     *
+     * @deprecated Use {@link WindowInsetsController#BEHAVIOR_DEFAULT} instead.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_FLAG_IMMERSIVE = 0x00000800;
+
+    /**
+     * Flag for {@link #setSystemUiVisibility(int)}: View would like to remain interactive when
+     * hiding the status bar with {@link #SYSTEM_UI_FLAG_FULLSCREEN} and/or hiding the navigation
+     * bar with {@link #SYSTEM_UI_FLAG_HIDE_NAVIGATION}.  Use this flag to create an immersive
+     * experience while also hiding the system bars.  If this flag is not set,
+     * {@link #SYSTEM_UI_FLAG_HIDE_NAVIGATION} will be force cleared by the system on any user
+     * interaction, and {@link #SYSTEM_UI_FLAG_FULLSCREEN} will be force-cleared by the system
+     * if the user swipes from the top of the screen.
+     * <p>When system bars are hidden in immersive mode, they can be revealed temporarily with
+     * system gestures, such as swiping from the top of the screen.  These transient system bars
+     * will overlay app's content, may have some degree of transparency, and will automatically
+     * hide after a short timeout.
+     * </p><p>Since this flag is a modifier for {@link #SYSTEM_UI_FLAG_FULLSCREEN} and
+     * {@link #SYSTEM_UI_FLAG_HIDE_NAVIGATION}, it only has an effect when used in combination
+     * with one or both of those flags.</p>
+     *
+     * @deprecated Use {@link WindowInsetsController#BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE} instead.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
+
+    /**
+     * Flag for {@link #setSystemUiVisibility(int)}: Requests the status bar to draw in a mode that
+     * is compatible with light status bar backgrounds.
+     *
+     * <p>For this to take effect, the window must request
+     * {@link android.view.WindowManager.LayoutParams#FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+     *         FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS} but not
+     * {@link android.view.WindowManager.LayoutParams#FLAG_TRANSLUCENT_STATUS
+     *         FLAG_TRANSLUCENT_STATUS}.
+     *
+     * @see android.R.attr#windowLightStatusBar
+     * @deprecated Use {@link WindowInsetsController#APPEARANCE_LIGHT_STATUS_BARS} instead.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_FLAG_LIGHT_STATUS_BAR = 0x00002000;
+
+    /**
+     * This flag was previously used for a private API. DO NOT reuse it for a public API as it might
+     * trigger undefined behavior on older platforms with apps compiled against a new SDK.
+     */
+    private static final int SYSTEM_UI_RESERVED_LEGACY1 = 0x00004000;
+
+    /**
+     * This flag was previously used for a private API. DO NOT reuse it for a public API as it might
+     * trigger undefined behavior on older platforms with apps compiled against a new SDK.
+     */
+    private static final int SYSTEM_UI_RESERVED_LEGACY2 = 0x00010000;
+
+    /**
+     * Flag for {@link #setSystemUiVisibility(int)}: Requests the navigation bar to draw in a mode
+     * that is compatible with light navigation bar backgrounds.
+     *
+     * <p>For this to take effect, the window must request
+     * {@link android.view.WindowManager.LayoutParams#FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+     *         FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS} but not
+     * {@link android.view.WindowManager.LayoutParams#FLAG_TRANSLUCENT_NAVIGATION
+     *         FLAG_TRANSLUCENT_NAVIGATION}.
+     *
+     * @see android.R.attr#windowLightNavigationBar
+     * @deprecated Use {@link WindowInsetsController#APPEARANCE_LIGHT_NAVIGATION_BARS} instead.
+     */
+    @Deprecated
+    public static final int SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR = 0x00000010;
+
+    /**
+     * @deprecated Use {@link #SYSTEM_UI_FLAG_LOW_PROFILE} instead.
+     */
+    @Deprecated
+    public static final int STATUS_BAR_HIDDEN = SYSTEM_UI_FLAG_LOW_PROFILE;
+
+    /**
+     * @deprecated Use {@link #SYSTEM_UI_FLAG_VISIBLE} instead.
+     */
+    @Deprecated
+    public static final int STATUS_BAR_VISIBLE = SYSTEM_UI_FLAG_VISIBLE;
+
+    /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to make the status bar not expandable.  Unless you also
+     * set {@link #STATUS_BAR_DISABLE_NOTIFICATION_ICONS}, new notifications will continue to show.
+     */
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+    public static final int STATUS_BAR_DISABLE_EXPAND = 0x00010000;
+
+    /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to hide notification icons and scrolling ticker text.
+     */
+    public static final int STATUS_BAR_DISABLE_NOTIFICATION_ICONS = 0x00020000;
+
+    /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to disable incoming notification alerts.  This will not block
+     * icons, but it will block sound, vibrating and other visual or aural notifications.
+     */
+    public static final int STATUS_BAR_DISABLE_NOTIFICATION_ALERTS = 0x00040000;
+
+    /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to hide only the scrolling ticker.  Note that
+     * {@link #STATUS_BAR_DISABLE_NOTIFICATION_ICONS} implies
+     * {@link #STATUS_BAR_DISABLE_NOTIFICATION_TICKER}.
+     */
+    public static final int STATUS_BAR_DISABLE_NOTIFICATION_TICKER = 0x00080000;
+
+    /**
+     * @hide
+     *
+     * NOTE: This flag may only be used in subtreeSystemUiVisibility. It is masked
+     * out of the public fields to keep the undefined bits out of the developer's way.
+     *
+     * Flag to hide the center system info area.
+     */
+    public static final int STATUS_BAR_DISABLE_SYSTEM_INFO = 0x00100000;
