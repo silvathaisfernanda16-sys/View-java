@@ -898,3 +898,644 @@ import java.util.function.Predicate;
  *
  * @see android.view.ViewGroup
  */
+@UiThread
+public class View implements Drawable.Callback, KeyEvent.Callback,
+        AccessibilityEventSource {
+    @UnsupportedAppUsage(maxTargetSdk = Build.VERSION_CODES.R, trackingBug = 170729553)
+    private static final boolean DBG = false;
+
+    /** @hide */
+    public static boolean DEBUG_DRAW = false;
+
+    /**
+     * The logging tag used by this class with android.util.Log.
+     */
+    protected static final String VIEW_LOG_TAG = "View";
+
+    /**
+     * The logging tag used by this class when logging verbose, autofill-related messages.
+     */
+    // NOTE: We cannot use android.view.autofill.Helper.sVerbose because that variable is not
+    // set if a session is not started.
+    private static final String AUTOFILL_LOG_TAG = "View.Autofill";
+
+    /**
+     * The logging tag used by this class when logging content capture-related messages.
+     */
+    private static final String CONTENT_CAPTURE_LOG_TAG = "View.ContentCapture";
+
+    private static final boolean DEBUG_CONTENT_CAPTURE = false;
+
+    /**
+     * When set to true, this view will save its attribute data.
+     *
+     * @hide
+     */
+    public static boolean sDebugViewAttributes = false;
+
+    /**
+     * When set to this application package view will save its attribute data.
+     *
+     * @hide
+     */
+    public static String sDebugViewAttributesApplicationPackage;
+
+    /**
+     * Used to mark a View that has no ID.
+     */
+    public static final int NO_ID = -1;
+
+    /**
+     * Last ID that is given to Views that are no part of activities.
+     *
+     * {@hide}
+     */
+    public static final int LAST_APP_AUTOFILL_ID = Integer.MAX_VALUE / 2;
+
+    /**
+     * Attribute to find the autofilled highlight
+     *
+     * @see #getAutofilledDrawable()
+     */
+    private static final int[] AUTOFILL_HIGHLIGHT_ATTR =
+            new int[]{android.R.attr.autofilledHighlight};
+
+    /**
+     * Signals that compatibility booleans have been initialized according to
+     * target SDK versions.
+     */
+    private static boolean sCompatibilityDone = false;
+
+    /** @hide */
+    public HapticScrollFeedbackProvider mScrollFeedbackProvider = null;
+
+    /**
+     * Ignore an optimization that skips unnecessary EXACTLY layout passes.
+     */
+    private static boolean sAlwaysRemeasureExactly = false;
+
+    /**
+     * When true calculates the bounds in parent from bounds in screen relative to its parents.
+     * This addresses the deprecated API (setBoundsInParent) in Compose, which causes empty
+     * getBoundsInParent call for Compose apps.
+     */
+    private static boolean sCalculateBoundsInParentFromBoundsInScreenFlagValue = false;
+
+    /**
+     * When true makes it possible to use onMeasure caches also when the force layout flag is
+     * enabled. This helps avoiding multiple measures in the same frame with the same dimensions.
+     */
+    private static boolean sUseMeasureCacheDuringForceLayoutFlagValue;
+
+    /**
+     * Allow setForeground/setBackground to be called (and ignored) on a textureview,
+     * without throwing
+     */
+    static boolean sTextureViewIgnoresDrawableSetters = false;
+
+    /**
+     * Prior to N, some ViewGroups would not convert LayoutParams properly even though both extend
+     * MarginLayoutParams. For instance, converting LinearLayout.LayoutParams to
+     * RelativeLayout.LayoutParams would lose margin information. This is fixed on N but target API
+     * check is implemented for backwards compatibility.
+     *
+     * {@hide}
+     */
+    protected static boolean sPreserveMarginParamsInLayoutParamConversion;
+
+    /**
+     * Prior to N, when drag enters into child of a view that has already received an
+     * ACTION_DRAG_ENTERED event, the parent doesn't get a ACTION_DRAG_EXITED event.
+     * ACTION_DRAG_LOCATION and ACTION_DROP were delivered to the parent of a view that returned
+     * false from its event handler for these events.
+     * Starting from N, the parent will get ACTION_DRAG_EXITED event before the child gets its
+     * ACTION_DRAG_ENTERED. ACTION_DRAG_LOCATION and ACTION_DROP are never propagated to the parent.
+     * sCascadedDragDrop is true for pre-N apps for backwards compatibility implementation.
+     */
+    static boolean sCascadedDragDrop;
+
+    /**
+     * Prior to O, auto-focusable didn't exist and widgets such as ListView use hasFocusable
+     * to determine things like whether or not to permit item click events. We can't break
+     * apps that do this just because more things (clickable things) are now auto-focusable
+     * and they would get different results, so give old behavior to old apps.
+     */
+    static boolean sHasFocusableExcludeAutoFocusable;
+
+    /**
+     * Prior to O, auto-focusable didn't exist and views marked as clickable weren't implicitly
+     * made focusable by default. As a result, apps could (incorrectly) change the clickable
+     * setting of views off the UI thread. Now that clickable can effect the focusable state,
+     * changing the clickable attribute off the UI thread will cause an exception (since changing
+     * the focusable state checks). In order to prevent apps from crashing, we will handle this
+     * specific case and just not notify parents on new focusables resulting from marking views
+     * clickable from outside the UI thread.
+     */
+    private static boolean sAutoFocusableOffUIThreadWontNotifyParents;
+
+    /**
+     * Prior to P things like setScaleX() allowed passing float values that were bogus such as
+     * Float.NaN. If the app is targetting P or later then passing these values will result in an
+     * exception being thrown. If the app is targetting an earlier SDK version, then we will
+     * silently clamp these values to avoid crashes elsewhere when the rendering code hits
+     * these bogus values.
+     */
+    private static boolean sThrowOnInvalidFloatProperties;
+
+    /**
+     * Prior to P, {@code #startDragAndDrop} accepts a builder which produces an empty drag shadow.
+     * Currently zero size SurfaceControl cannot be created thus we create a 1x1 surface instead.
+     */
+    private static boolean sAcceptZeroSizeDragShadow;
+
+    /**
+     * When true, measure and layout passes of all the newly attached views will be logged with
+     * {@link Trace}, so we can better debug jank due to complex view hierarchies.
+     */
+    private static boolean sTraceLayoutSteps;
+
+    /**
+     * When not null, emits a {@link Trace} instant event and the stacktrace every time a relayout
+     * of a class having this name happens.
+     */
+    private static String sTraceRequestLayoutClass;
+
+    @Nullable
+    private ViewCredentialHandler mViewCredentialHandler;
+
+    /** Used to avoid computing the full strings each time when layout tracing is enabled. */
+    @Nullable
+    private ViewTraversalTracingStrings mTracingStrings;
+
+    /**
+     * Prior to R, {@link #dispatchApplyWindowInsets} had an issue:
+     * <p>The modified insets changed by {@link #onApplyWindowInsets} were passed to the
+     * entire view hierarchy in prefix order, including siblings as well as siblings of parents
+     * further down the hierarchy. This violates the basic concepts of the view hierarchy, and
+     * thus, the hierarchical dispatching mechanism was hard to use for apps.
+     * <p>
+     * In order to make window inset dispatching work properly, we dispatch window insets
+     * in the view hierarchy in a proper hierarchical manner if this flag is set to {@code false}.
+     */
+    static boolean sBrokenInsetsDispatch;
+
+    /**
+     * Prior to Q, calling
+     * {@link com.android.internal.policy.DecorView#setBackgroundDrawable(Drawable)}
+     * did not call update the window format so the opacity of the background was not correctly
+     * applied to the window. Some applications rely on this misbehavior to work properly.
+     * <p>
+     * From Q, {@link com.android.internal.policy.DecorView#setBackgroundDrawable(Drawable)} is
+     * the same as {@link com.android.internal.policy.DecorView#setWindowBackground(Drawable)}
+     * which updates the window format.
+     * @hide
+     */
+    protected static boolean sBrokenWindowBackground;
+
+    /**
+     * Prior to R, we were always forcing a layout of the entire hierarchy when insets changed from
+     * the server. This is inefficient and not all apps use it. Instead, we want to rely on apps
+     * calling {@link #requestLayout} when they need to relayout based on an insets change.
+     */
+    static boolean sForceLayoutWhenInsetsChanged;
+
+    /** @hide */
+    @IntDef({NOT_FOCUSABLE, FOCUSABLE, FOCUSABLE_AUTO})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Focusable {}
+
+    /**
+     * This view does not want keystrokes.
+     * <p>
+     * Use with {@link #setFocusable(int)} and <a href="#attr_android:focusable">{@code
+     * android:focusable}.
+     */
+    public static final int NOT_FOCUSABLE = 0x00000000;
+
+    /**
+     * This view wants keystrokes.
+     * <p>
+     * Use with {@link #setFocusable(int)} and <a href="#attr_android:focusable">{@code
+     * android:focusable}.
+     */
+    public static final int FOCUSABLE = 0x00000001;
+
+    /**
+     * This view determines focusability automatically. This is the default.
+     * <p>
+     * Use with {@link #setFocusable(int)} and <a href="#attr_android:focusable">{@code
+     * android:focusable}.
+     */
+    public static final int FOCUSABLE_AUTO = 0x00000010;
+
+    /**
+     * Mask for use with setFlags indicating bits used for focus.
+     */
+    private static final int FOCUSABLE_MASK = 0x00000011;
+
+    /**
+     * This view will adjust its padding to fit system windows (e.g. status bar)
+     */
+    private static final int FITS_SYSTEM_WINDOWS = 0x00000002;
+
+    /** @hide */
+    @IntDef({VISIBLE, INVISIBLE, GONE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Visibility {}
+
+    /**
+     * This view is visible.
+     * Use with {@link #setVisibility} and <a href="#attr_android:visibility">{@code
+     * android:visibility}.
+     */
+    public static final int VISIBLE = 0x00000000;
+
+    /**
+     * This view is invisible, but it still takes up space for layout purposes.
+     * Use with {@link #setVisibility} and <a href="#attr_android:visibility">{@code
+     * android:visibility}.
+     */
+    public static final int INVISIBLE = 0x00000004;
+
+    /**
+     * This view is invisible, and it doesn't take any space for layout
+     * purposes. Use with {@link #setVisibility} and <a href="#attr_android:visibility">{@code
+     * android:visibility}.
+     */
+    public static final int GONE = 0x00000008;
+
+    /**
+     * Mask for use with setFlags indicating bits used for visibility.
+     * {@hide}
+     */
+    static final int VISIBILITY_MASK = 0x0000000C;
+
+    private static final int[] VISIBILITY_FLAGS = {VISIBLE, INVISIBLE, GONE};
+
+    /**
+     * Hint indicating that this view can be autofilled with an email address.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_EMAIL_ADDRESS}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_EMAIL_ADDRESS = "emailAddress";
+
+    /**
+     * Hint indicating that this view can be autofilled with a user's real name.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_NAME}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_NAME = "name";
+
+    /**
+     * Hint indicating that this view can be autofilled with a username.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_USERNAME}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_USERNAME = "username";
+
+    /**
+     * Hint indicating that this view can be autofilled with a password.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_PASSWORD}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_PASSWORD = "password";
+
+    /**
+     * Hint indicating that this view can be autofilled with a phone number.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_PHONE}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_PHONE = "phone";
+
+    /**
+     * Hint indicating that this view can be autofilled with a postal address.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_POSTAL_ADDRESS}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_POSTAL_ADDRESS = "postalAddress";
+
+    /**
+     * Hint indicating that this view can be autofilled with a postal code.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_POSTAL_CODE}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_POSTAL_CODE = "postalCode";
+
+    /**
+     * Hint indicating that this view can be autofilled with a credit card number.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_CREDIT_CARD_NUMBER}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_CREDIT_CARD_NUMBER = "creditCardNumber";
+
+    /**
+     * Hint indicating that this view can be autofilled with a credit card security code.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_CREDIT_CARD_SECURITY_CODE}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_CREDIT_CARD_SECURITY_CODE = "creditCardSecurityCode";
+
+    /**
+     * Hint indicating that this view can be autofilled with a credit card expiration date.
+     *
+     * <p>It should be used when the credit card expiration date is represented by just one view;
+     * if it is represented by more than one (for example, one view for the month and another view
+     * for the year), then each of these views should use the hint specific for the unit
+     * ({@link #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DAY},
+     * {@link #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_MONTH},
+     * or {@link #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_YEAR}).
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DATE}</code>).
+     *
+     * <p>When annotating a view with this hint, it's recommended to use a date autofill value to
+     * avoid ambiguity when the autofill service provides a value for it. To understand why a
+     * value can be ambiguous, consider "April of 2020", which could be represented as either of
+     * the following options:
+     *
+     * <ul>
+     *   <li>{@code "04/2020"}
+     *   <li>{@code "4/2020"}
+     *   <li>{@code "2020/04"}
+     *   <li>{@code "2020/4"}
+     *   <li>{@code "April/2020"}
+     *   <li>{@code "Apr/2020"}
+     * </ul>
+     *
+     * <p>You define a date autofill value for the view by overriding the following methods:
+     *
+     * <ol>
+     *   <li>{@link #getAutofillType()} to return {@link #AUTOFILL_TYPE_DATE}.
+     *   <li>{@link #getAutofillValue()} to return a
+     *       {@link AutofillValue#forDate(long) date autofillvalue}.
+     *   <li>{@link #autofill(AutofillValue)} to expect a data autofillvalue.
+     * </ol>
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DATE =
+            "creditCardExpirationDate";
+
+    /**
+     * Hint indicating that this view can be autofilled with a credit card expiration month.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_MONTH}</code>).
+     *
+     * <p>When annotating a view with this hint, it's recommended to use a text autofill value
+     * whose value is the numerical representation of the month, starting on {@code 1} to avoid
+     * ambiguity when the autofill service provides a value for it. To understand why a
+     * value can be ambiguous, consider "January", which could be represented as either of
+     *
+     * <ul>
+     *   <li>{@code "1"}: recommended way.
+     *   <li>{@code "0"}: if following the {@link Calendar#MONTH} convention.
+     *   <li>{@code "January"}: full name, in English.
+     *   <li>{@code "jan"}: abbreviated name, in English.
+     *   <li>{@code "Janeiro"}: full name, in another language.
+     * </ul>
+     *
+     * <p>Another recommended approach is to use a date autofill value - see
+     * {@link #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DATE} for more details.
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_MONTH =
+            "creditCardExpirationMonth";
+
+    /**
+     * Hint indicating that this view can be autofilled with a credit card expiration year.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_YEAR}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_YEAR =
+            "creditCardExpirationYear";
+
+    /**
+     * Hint indicating that this view can be autofilled with a credit card expiration day.
+     *
+     * <p>Can be used with either {@link #setAutofillHints(String[])} or
+     * <a href="#attr_android:autofillHint"> {@code android:autofillHint}</a> (in which case the
+     * value should be <code>{@value #AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DAY}</code>).
+     *
+     * <p>See {@link #setAutofillHints(String...)} for more info about autofill hints.
+     */
+    public static final String AUTOFILL_HINT_CREDIT_CARD_EXPIRATION_DAY = "creditCardExpirationDay";
+
+    /**
+     * A hint indicating that this view can be autofilled with a password.
+     *
+     * This is a heuristic-based hint that is meant to be used by UI Toolkit developers when a
+     * view is a password field but doesn't specify a
+     * <code>{@value View#AUTOFILL_HINT_PASSWORD}</code>.
+     * @hide
+     */
+    // TODO(229765029): unhide this for UI toolkit
+    public static final String AUTOFILL_HINT_PASSWORD_AUTO = "passwordAuto";
+
+    /**
+     * Hint indicating that the developer intends to fill this view with output from
+     * CredentialManager.
+     *
+     * @hide
+     */
+    public static final String AUTOFILL_HINT_CREDENTIAL_MANAGER = "credential";
+
+    /**
+     * Hints for the autofill services that describes the content of the view.
+     */
+    private @Nullable String[] mAutofillHints;
+
+    /**
+     * Autofill id, lazily created on calls to {@link #getAutofillId()}.
+     */
+    private AutofillId mAutofillId;
+
+    /** @hide */
+    @IntDef(prefix = { "AUTOFILL_TYPE_" }, value = {
+            AUTOFILL_TYPE_NONE,
+            AUTOFILL_TYPE_TEXT,
+            AUTOFILL_TYPE_TOGGLE,
+            AUTOFILL_TYPE_LIST,
+            AUTOFILL_TYPE_DATE,
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AutofillType {}
+
+    /**
+     * Autofill type for views that cannot be autofilled.
+     *
+     * <p>Typically used when the view is read-only; for example, a text label.
+     *
+     * @see #getAutofillType()
+     */
+    public static final int AUTOFILL_TYPE_NONE = 0;
+
+    /**
+     * Autofill type for a text field, which is filled by a {@link CharSequence}.
+     *
+     * <p>{@link AutofillValue} instances for autofilling a {@link View} can be obtained through
+     * {@link AutofillValue#forText(CharSequence)}, and the value passed to autofill a
+     * {@link View} can be fetched through {@link AutofillValue#getTextValue()}.
+     *
+     * @see #getAutofillType()
+     */
+    public static final int AUTOFILL_TYPE_TEXT = 1;
+
+    /**
+     * Autofill type for a togglable field, which is filled by a {@code boolean}.
+     *
+     * <p>{@link AutofillValue} instances for autofilling a {@link View} can be obtained through
+     * {@link AutofillValue#forToggle(boolean)}, and the value passed to autofill a
+     * {@link View} can be fetched through {@link AutofillValue#getToggleValue()}.
+     *
+     * @see #getAutofillType()
+     */
+    public static final int AUTOFILL_TYPE_TOGGLE = 2;
+  
+    /**
+     * Autofill type for a selection list field, which is filled by an {@code int}
+     * representing the element index inside the list (starting at {@code 0}).
+     *
+     * <p>{@link AutofillValue} instances for autofilling a {@link View} can be obtained through
+     * {@link AutofillValue#forList(int)}, and the value passed to autofill a
+     * {@link View} can be fetched through {@link AutofillValue#getListValue()}.
+     *
+     * <p>The available options in the selection list are typically provided by
+     * {@link android.app.assist.AssistStructure.ViewNode#getAutofillOptions()}.
+     *
+     * @see #getAutofillType()
+     */
+    public static final int AUTOFILL_TYPE_LIST = 3;
+
+    /**
+     * Autofill type for a field that contains a date, which is represented by a long representing
+     * the number of milliseconds since the standard base time known as "the epoch", namely
+     * January 1, 1970, 00:00:00 GMT (see {@link java.util.Date#getTime()}.
+     *
+     * <p>{@link AutofillValue} instances for autofilling a {@link View} can be obtained through
+     * {@link AutofillValue#forDate(long)}, and the values passed to
+     * autofill a {@link View} can be fetched through {@link AutofillValue#getDateValue()}.
+     *
+     * @see #getAutofillType()
+     */
+    public static final int AUTOFILL_TYPE_DATE = 4;
+
+
+    /** @hide */
+    @IntDef(prefix = { "IMPORTANT_FOR_AUTOFILL_" }, value = {
+            IMPORTANT_FOR_AUTOFILL_AUTO,
+            IMPORTANT_FOR_AUTOFILL_YES,
+            IMPORTANT_FOR_AUTOFILL_NO,
+            IMPORTANT_FOR_AUTOFILL_YES_EXCLUDE_DESCENDANTS,
+            IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AutofillImportance {}
+
+    /**
+     * Automatically determine whether a view is important for autofill.
+     *
+     * @see #isImportantForAutofill()
+     * @see #setImportantForAutofill(int)
+     */
+    public static final int IMPORTANT_FOR_AUTOFILL_AUTO = 0x0;
+
+    /**
+     * The view is important for autofill, and its children (if any) will be traversed.
+     *
+     * @see #isImportantForAutofill()
+     * @see #setImportantForAutofill(int)
+     */
+    public static final int IMPORTANT_FOR_AUTOFILL_YES = 0x1;
+
+    /**
+     * The view is not important for autofill, but its children (if any) will be traversed.
+     *
+     * @see #isImportantForAutofill()
+     * @see #setImportantForAutofill(int)
+     */
+    public static final int IMPORTANT_FOR_AUTOFILL_NO = 0x2;
+
+    /**
+     * The view is important for autofill, but its children (if any) will not be traversed.
+     *
+     * @see #isImportantForAutofill()
+     * @see #setImportantForAutofill(int)
+     */
+    public static final int IMPORTANT_FOR_AUTOFILL_YES_EXCLUDE_DESCENDANTS = 0x4;
+
+    /**
+     * The view is not important for autofill, and its children (if any) will not be traversed.
+     *
+     * @see #isImportantForAutofill()
+     * @see #setImportantForAutofill(int)
+     */
+    public static final int IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS = 0x8;
+
+    /** @hide */
+    @IntDef(flag = true, prefix = { "AUTOFILL_FLAG_" }, value = {
+            AUTOFILL_FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AutofillFlags {}
+
+    /**
+     * Flag requesting you to add views that are marked as not important for autofill
+     * (see {@link #setImportantForAutofill(int)}) to a {@link ViewStructure}.
+     */
+    public static final int AUTOFILL_FLAG_INCLUDE_NOT_IMPORTANT_VIEWS = 0x1;
+
+    /** @hide */
+    @IntDef(prefix = { "IMPORTANT_FOR_CONTENT_CAPTURE_" }, value = {
+            IMPORTANT_FOR_CONTENT_CAPTURE_AUTO,
+            IMPORTANT_FOR_CONTENT_CAPTURE_YES,
+            IMPORTANT_FOR_CONTENT_CAPTURE_NO,
+            IMPORTANT_FOR_CONTENT_CAPTURE_YES_EXCLUDE_DESCENDANTS,
+            IMPORTANT_FOR_CONTENT_CAPTURE_NO_EXCLUDE_DESCENDANTS
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ContentCaptureImportance {}
+  
